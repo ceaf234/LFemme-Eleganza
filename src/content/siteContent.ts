@@ -2,16 +2,16 @@ export const siteContent = {
   brand: {
     name: "L'Femme",
     accent: "Eleganza",
-    tagline: "SPA & BELLEZA",
+    tagline: "STUDIO DE CEJAS, PESTAÑAS Y CUIDADO DE LA PIEL",
     subtitle: "STUDIO ESPECIALIZADO EN CEJAS, PESTAÑAS Y CUIDADO DE LA PIEL",
-    motto: "Elegancia en Cada Detalle",
+    motto: "¡Tú, en Tu Mejor Versión! Donde Tu Piel Florece y Tu Mirada Deslumbra",
   },
 
   nav: {
     links: [
       { label: "Nuestros Servicios", href: "#servicios", icon: "sparkles" },
       { label: "Dónde Ubicarnos", href: "#contacto", icon: "location" },
-      { label: "Mándanos un Mensaje", href: "#contacto", icon: "message" },
+      { label: "Envíanos un WhatsApp", href: "https://wa.me/50223456789", icon: "whatsapp", isWhatsApp: true },
     ],
     cta: {
       label: "Reserva tu Cita",
@@ -24,7 +24,7 @@ export const siteContent = {
       line1: "L'Femme",
       line2: "Eleganza",
     },
-    subheadline: "Elegancia en Cada Detalle",
+    subheadline: "¡Tú, en Tu Mejor Versión! Donde Tu Piel Florece y Tu Mirada Deslumbra",
     cta: "RESERVA TU CITA",
   },
 

@@ -69,9 +69,9 @@ export default function Hero() {
           {hero.cta}
         </a>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-accent/50 rounded-full flex items-start justify-center p-1">
+        {/* Scroll indicator - positioned below button */}
+        <div className="mt-10 md:mt-12 animate-bounce">
+          <div className="w-6 h-10 border-2 border-accent/50 rounded-full flex items-start justify-center p-1 mx-auto">
             <div className="w-1 h-2 bg-accent rounded-full" />
           </div>
         </div>

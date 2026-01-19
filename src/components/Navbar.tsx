@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { HiOutlineSparkles, HiOutlineLocationMarker, HiOutlineChatAlt2, HiOutlineCalendar, HiOutlineMenu, HiOutlineX } from 'react-icons/hi';
+import { HiOutlineSparkles, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineMenu, HiOutlineX } from 'react-icons/hi';
+import { FaWhatsapp } from 'react-icons/fa';
 import { siteContent } from '../content/siteContent';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   sparkles: HiOutlineSparkles,
   location: HiOutlineLocationMarker,
-  message: HiOutlineChatAlt2,
+  whatsapp: FaWhatsapp,
 };
 
 interface NavbarProps {
@@ -60,11 +61,31 @@ export default function Navbar({ activeSection }: NavbarProps) {
             {nav.links.map((link) => {
               const Icon = iconMap[link.icon];
               const isActive = activeSection === link.href.replace('#', '');
+              const isWhatsApp = 'isWhatsApp' in link && link.isWhatsApp;
+              const isExternal = link.href.startsWith('http');
+
+              if (isWhatsApp) {
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm font-sans px-4 py-2 rounded-md bg-[#25D366] text-white hover:bg-[#128C7E] transition-colors"
+                  >
+                    {Icon && <Icon className="w-4 h-4" />}
+                    {link.label}
+                  </a>
+                );
+              }
+
               return (
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
+                  onClick={isExternal ? undefined : (e) => handleNavClick(e, link.href)}
+                  target={isExternal ? "_blank" : undefined}
+                  rel={isExternal ? "noopener noreferrer" : undefined}
                   className={`flex items-center gap-2 text-sm font-sans transition-colors ${
                     isActive
                       ? 'text-accent'
@@ -114,11 +135,31 @@ export default function Navbar({ activeSection }: NavbarProps) {
             {nav.links.map((link) => {
               const Icon = iconMap[link.icon];
               const isActive = activeSection === link.href.replace('#', '');
+              const isWhatsApp = 'isWhatsApp' in link && link.isWhatsApp;
+              const isExternal = link.href.startsWith('http');
+
+              if (isWhatsApp) {
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 text-sm font-sans px-4 py-2 rounded-md bg-[#25D366] text-white hover:bg-[#128C7E] transition-colors"
+                  >
+                    {Icon && <Icon className="w-4 h-4" />}
+                    {link.label}
+                  </a>
+                );
+              }
+
               return (
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
+                  onClick={isExternal ? undefined : (e) => handleNavClick(e, link.href)}
+                  target={isExternal ? "_blank" : undefined}
+                  rel={isExternal ? "noopener noreferrer" : undefined}
                   className={`flex items-center gap-2 text-sm font-sans transition-colors ${
                     isActive
                       ? 'text-accent'
