@@ -46,6 +46,17 @@ body {
     @apply inline-flex items-center justify-center gap-2 px-8 py-3 border border-accent text-accent font-sans font-medium text-sm tracking-wider uppercase transition-all duration-300 hover:bg-accent hover:text-primary;
   }
 
+  .btn-cta {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3 font-sans font-medium text-sm tracking-wider uppercase transition-all duration-300 rounded-md;
+    background-color: #C9A227;
+    color: #0D2E2B;
+  }
+
+  .btn-cta:hover {
+    background-color: #D4B84A;
+    box-shadow: 0 4px 16px rgba(201, 162, 39, 0.4);
+  }
+
   .card {
     @apply bg-primary-light border border-border rounded-lg p-8 transition-all duration-300 hover:border-accent/50 hover:shadow-lg hover:shadow-accent/5 hover:-translate-y-1;
   }

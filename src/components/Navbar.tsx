@@ -104,7 +104,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
             <a
               href={nav.cta.href}
               onClick={(e) => handleNavClick(e, nav.cta.href)}
-              className="btn-outline text-xs py-2 px-4"
+              className="btn-cta text-xs py-2 px-4"
             >
               <HiOutlineCalendar className="w-4 h-4" />
               {nav.cta.label}
@@ -174,7 +174,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
             <a
               href={nav.cta.href}
               onClick={(e) => handleNavClick(e, nav.cta.href)}
-              className="btn-primary text-xs py-2 px-4 w-full"
+              className="btn-cta text-xs py-2 px-4 w-full"
             >
               <HiOutlineCalendar className="w-4 h-4" />
               {nav.cta.label}

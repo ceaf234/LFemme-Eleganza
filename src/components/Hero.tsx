@@ -64,7 +64,7 @@ export default function Hero() {
         <a
           href="#contacto"
           onClick={handleCTAClick}
-          className="btn-outline text-sm"
+          className="btn-cta text-sm"
         >
           {hero.cta}
         </a>
