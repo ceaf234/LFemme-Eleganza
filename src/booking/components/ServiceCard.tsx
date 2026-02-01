@@ -28,14 +28,22 @@ export default function ServiceCard({ service, isSelected, onToggle }: ServiceCa
         </div>
       )}
 
-      <h3 className="font-serif text-lg text-text-primary mb-2">{service.name}</h3>
+      <h3 className="font-serif text-lg text-text-primary mb-1">{service.name}</h3>
+
+      {service.description && (
+        <p className="text-text-secondary text-sm font-sans mb-3 line-clamp-2">
+          {service.description}
+        </p>
+      )}
 
       <div className="flex items-center gap-4 text-text-secondary text-sm mb-4">
         <span className="flex items-center gap-1">
           <HiOutlineClock className="w-4 h-4" />
           {service.duration} {content.cart.minutesLabel}
         </span>
-        <span className="text-accent font-medium">Q{service.price}</span>
+        <span className="text-accent font-medium">
+          Q{service.price.toFixed(2)}
+        </span>
       </div>
 
       <span

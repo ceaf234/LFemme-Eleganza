@@ -3,6 +3,7 @@
 export interface BookingService {
   id: string;
   name: string;
+  description: string;
   duration: number; // minutes
   price: number; // GTQ
   category: string;

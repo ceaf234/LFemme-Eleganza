@@ -26,12 +26,12 @@ export const bookingContent = {
       minutesLabel: 'min',
     },
     items: [
-      { id: 'facial-basico', name: 'Facial Básico', duration: 60, price: 350, category: 'faciales' },
-      { id: 'facial-premium', name: 'Facial Premium', duration: 90, price: 550, category: 'faciales' },
-      { id: 'masaje-relajante', name: 'Masaje Relajante', duration: 60, price: 400, category: 'masajes' },
-      { id: 'laminado-cejas', name: 'Laminado de Cejas', duration: 45, price: 250, category: 'cejas-pestañas' },
-      { id: 'extensiones-pestanas', name: 'Extensiones de Pestañas', duration: 90, price: 500, category: 'cejas-pestañas' },
-      { id: 'exfoliacion-corporal', name: 'Exfoliación Corporal', duration: 60, price: 450, category: 'corporales' },
+      { id: 'facial-basico', name: 'Facial Básico', description: 'Limpieza profunda y revitalización facial.', duration: 60, price: 350, category: 'faciales' },
+      { id: 'facial-premium', name: 'Facial Premium', description: 'Tratamiento facial completo con productos premium.', duration: 90, price: 550, category: 'faciales' },
+      { id: 'masaje-relajante', name: 'Masaje Relajante', description: 'Masaje corporal para aliviar tensión y estrés.', duration: 60, price: 400, category: 'masajes' },
+      { id: 'laminado-cejas', name: 'Laminado de Cejas', description: 'Laminado y diseño profesional de cejas.', duration: 45, price: 250, category: 'cejas-pestañas' },
+      { id: 'extensiones-pestanas', name: 'Extensiones de Pestañas', description: 'Extensiones de pestañas pelo a pelo.', duration: 90, price: 500, category: 'cejas-pestañas' },
+      { id: 'exfoliacion-corporal', name: 'Exfoliación Corporal', description: 'Exfoliación completa para una piel renovada.', duration: 60, price: 450, category: 'corporales' },
     ],
   },
 
