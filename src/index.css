@@ -7,8 +7,28 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 body {
   @apply bg-primary text-text-primary font-sans antialiased;
+}
+
+/* Focus indicators */
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-accent;
 }
 
 /* Custom scrollbar */
@@ -48,12 +68,12 @@ body {
 
   .btn-cta {
     @apply inline-flex items-center justify-center gap-2 px-8 py-3 font-sans font-medium text-sm tracking-wider uppercase transition-all duration-300 rounded-md;
-    background-color: #C9A227;
+    background-color: #d4a828;
     color: #0D2E2B;
   }
 
   .btn-cta:hover {
-    background-color: #D4B84A;
+    background-color: #e0bc42;
     box-shadow: 0 4px 16px rgba(201, 162, 39, 0.4);
   }
 

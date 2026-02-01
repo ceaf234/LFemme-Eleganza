@@ -27,7 +27,7 @@ export default function Socials() {
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={social.label}
+                aria-label={`${social.label} (abre en nueva ventana)`}
                 className="icon-circle hover:bg-accent hover:text-primary hover:border-accent transition-all duration-300"
               >
                 <Icon className="w-6 h-6" />

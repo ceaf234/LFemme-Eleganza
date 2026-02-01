@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import About from './components/About';
-import Services from './components/Services';
-import Socials from './components/Socials';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
+
+const About = lazy(() => import('./components/About'));
+const Services = lazy(() => import('./components/Services'));
+const Socials = lazy(() => import('./components/Socials'));
+const Contact = lazy(() => import('./components/Contact'));
+const Footer = lazy(() => import('./components/Footer'));
 
 function App() {
   const [activeSection, setActiveSection] = useState('inicio');
@@ -41,15 +42,25 @@ function App() {
 
   return (
     <div className="min-h-screen bg-primary">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-accent focus:text-primary focus:rounded-md focus:font-sans focus:text-sm focus:font-medium"
+      >
+        Ir al contenido principal
+      </a>
       <Navbar activeSection={activeSection} />
-      <main>
+      <main id="main-content">
         <Hero />
-        <About />
-        <Services />
-        <Socials />
-        <Contact />
+        <Suspense fallback={null}>
+          <About />
+          <Services />
+          <Socials />
+          <Contact />
+        </Suspense>
       </main>
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </div>
   );
 }

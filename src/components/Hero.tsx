@@ -70,7 +70,7 @@ export default function Hero() {
         </a>
 
         {/* Scroll indicator - positioned below button */}
-        <div className="mt-10 md:mt-12 animate-bounce">
+        <div className="mt-10 md:mt-12 animate-bounce" aria-hidden="true">
           <div className="w-6 h-10 border-2 border-accent/50 rounded-full flex items-start justify-center p-1 mx-auto">
             <div className="w-1 h-2 bg-accent rounded-full" />
           </div>

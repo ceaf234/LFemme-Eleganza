@@ -13,9 +13,9 @@ export default {
           dark: '#091519',
         },
         accent: {
-          DEFAULT: '#c9a227',
-          light: '#d4b43f',
-          dark: '#b08f1f',
+          DEFAULT: '#d4a828',
+          light: '#e0bc42',
+          dark: '#b89222',
         },
         text: {
           primary: '#e8e6e3',

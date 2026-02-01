@@ -60,9 +60,9 @@ export default function Contact() {
 
         {/* CTA Button */}
         <div className="text-center mt-16">
-          <a href="#" className="btn-primary">
+          <button type="button" className="btn-primary">
             {contact.cta}
-          </a>
+          </button>
         </div>
       </div>
     </section>

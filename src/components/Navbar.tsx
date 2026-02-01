@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { HiOutlineSparkles, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineMenu, HiOutlineX } from 'react-icons/hi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { siteContent } from '../content/siteContent';
@@ -16,6 +16,8 @@ interface NavbarProps {
 export default function Navbar({ activeSection }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +27,31 @@ export default function Navbar({ activeSection }: NavbarProps) {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const closeMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(false);
+    menuToggleRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeMobileMenu();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isMobileMenuOpen, closeMobileMenu]);
+
+  useEffect(() => {
+    if (isMobileMenuOpen && mobileMenuRef.current) {
+      const firstLink = mobileMenuRef.current.querySelector('a');
+      firstLink?.focus();
+    }
+  }, [isMobileMenuOpen]);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -39,6 +66,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
 
   return (
     <nav
+      aria-label="Sitio principal"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? 'bg-primary/95 backdrop-blur-sm py-3 shadow-lg shadow-black/20'
@@ -71,6 +99,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={`${link.label} (abre en nueva ventana)`}
                     className="flex items-center gap-2 text-sm font-sans px-4 py-2 rounded-md bg-[#25D366] text-white hover:bg-[#128C7E] transition-colors"
                   >
                     {Icon && <Icon className="w-4 h-4" />}
@@ -86,6 +115,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
                   onClick={isExternal ? undefined : (e) => handleNavClick(e, link.href)}
                   target={isExternal ? "_blank" : undefined}
                   rel={isExternal ? "noopener noreferrer" : undefined}
+                  aria-current={isActive ? 'page' : undefined}
                   className={`flex items-center gap-2 text-sm font-sans transition-colors ${
                     isActive
                       ? 'text-accent'
@@ -113,9 +143,12 @@ export default function Navbar({ activeSection }: NavbarProps) {
 
           {/* Mobile Menu Button */}
           <button
+            ref={menuToggleRef}
             className="lg:hidden text-text-primary hover:text-accent transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
           >
             {isMobileMenuOpen ? (
               <HiOutlineX className="w-6 h-6" />
@@ -127,6 +160,10 @@ export default function Navbar({ activeSection }: NavbarProps) {
 
         {/* Mobile Menu */}
         <div
+          id="mobile-menu"
+          ref={mobileMenuRef}
+          role="navigation"
+          aria-label="Menú principal"
           className={`lg:hidden overflow-hidden transition-all duration-300 ${
             isMobileMenuOpen ? 'max-h-96 mt-4' : 'max-h-0'
           }`}
@@ -145,6 +182,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={`${link.label} (abre en nueva ventana)`}
                     className="flex items-center justify-center gap-2 text-sm font-sans px-4 py-2 rounded-md bg-[#25D366] text-white hover:bg-[#128C7E] transition-colors"
                   >
                     {Icon && <Icon className="w-4 h-4" />}
@@ -160,6 +198,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
                   onClick={isExternal ? undefined : (e) => handleNavClick(e, link.href)}
                   target={isExternal ? "_blank" : undefined}
                   rel={isExternal ? "noopener noreferrer" : undefined}
+                  aria-current={isActive ? 'page' : undefined}
                   className={`flex items-center gap-2 text-sm font-sans transition-colors ${
                     isActive
                       ? 'text-accent'

@@ -29,12 +29,12 @@ function ServiceCard({ title, description, icon, cta }: ServiceCardProps) {
       <p className="text-text-secondary text-sm leading-relaxed mb-6">
         {description}
       </p>
-      <a
-        href="#"
-        className="inline-flex items-center gap-2 text-accent text-sm font-medium tracking-wide hover:gap-3 transition-all"
+      <button
+        type="button"
+        className="inline-flex items-center gap-2 text-accent text-sm font-medium tracking-wide hover:gap-3 transition-all bg-transparent border-none cursor-pointer"
       >
         {cta} <HiArrowRight className="w-4 h-4" />
-      </a>
+      </button>
     </div>
   );
 }
