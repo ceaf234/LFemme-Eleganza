@@ -124,7 +124,7 @@ export const siteContent = {
   },
 
   footer: {
-    copyright: "© 2024 L'Femme Eleganza. Todos los derechos reservados.",
+    copyright: "© 2025 L'Femme Eleganza. Todos los derechos reservados.",
   },
 };
 

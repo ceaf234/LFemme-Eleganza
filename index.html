@@ -4,32 +4,131 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0d1f23" />
+    <meta name="robots" content="index, follow" />
 
     <!-- SEO Meta Tags -->
     <title>L'Femme Eleganza | Spa & Belleza - Cejas, Pestañas y Cuidado de la Piel</title>
     <meta name="description" content="L'Femme Eleganza - Studio especializado en cejas, pestañas y cuidado de la piel. Elegancia en cada detalle. Ubicados en Zona 10, Ciudad de Guatemala." />
     <meta name="keywords" content="spa, belleza, cejas, pestañas, faciales, masajes, Guatemala, tratamientos corporales" />
+    <link rel="canonical" href="https://lfemmeeleganza.com/" />
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://lfemmeeleganza.com/" />
     <meta property="og:title" content="L'Femme Eleganza | Spa & Belleza" />
     <meta property="og:description" content="Studio especializado en cejas, pestañas y cuidado de la piel. Elegancia en cada detalle." />
-    <meta property="og:image" content="/og-image.jpg" />
+    <meta property="og:image" content="https://lfemmeeleganza.com/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="es_GT" />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://lfemmeeleganza.com/" />
-    <meta property="twitter:title" content="L'Femme Eleganza | Spa & Belleza" />
-    <meta property="twitter:description" content="Studio especializado en cejas, pestañas y cuidado de la piel. Elegancia en cada detalle." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://lfemmeeleganza.com/" />
+    <meta name="twitter:title" content="L'Femme Eleganza | Spa & Belleza" />
+    <meta name="twitter:description" content="Studio especializado en cejas, pestañas y cuidado de la piel. Elegancia en cada detalle." />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BeautySalon",
+      "name": "L'Femme Eleganza",
+      "description": "Studio especializado en cejas, pestañas y cuidado de la piel. Faciales, masajes, tratamientos corporales y diseño de cejas y pestañas en Ciudad de Guatemala.",
+      "url": "https://lfemmeeleganza.com",
+      "telephone": "+50223456789",
+      "email": "info@lfemmeeleganza.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Centro Comercial Eleganza, Local 205",
+        "addressLocality": "Ciudad de Guatemala",
+        "addressRegion": "Zona 10",
+        "addressCountry": "GT"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "09:00",
+        "closes": "19:00"
+      },
+      "sameAs": [
+        "https://instagram.com/lfemme.eleganza",
+        "https://facebook.com/lfemmeeleganza",
+        "https://tiktok.com/@lfemme.eleganza"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios de Belleza",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Faciales",
+              "description": "Tratamientos de limpieza profunda, hidratación y rejuvenecimiento para una piel radiante."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Masajes",
+              "description": "Masajes relajantes y terapéuticos que liberan tensiones y restauran tu energía vital."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Tratamientos Corporales",
+              "description": "Exfoliaciones, envolturas y tratamientos reductivos para un cuerpo renovado."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Cejas y Pestañas",
+              "description": "Diseño de cejas, laminado, lifting y extensiones para una mirada impactante."
+            }
+          }
+        ]
+      }
+    }
+    </script>
 
     <!-- Google Fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" as="style" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="max-width: 800px; margin: 0 auto; padding: 40px 20px; font-family: Georgia, serif; color: #e8e6e3; background: #0d1f23;">
+        <h1>L'Femme Eleganza</h1>
+        <p>Studio especializado en cejas, pestañas y cuidado de la piel. Elegancia en cada detalle.</p>
+        <h2>Nuestros Servicios</h2>
+        <ul>
+          <li>Faciales — Tratamientos de limpieza profunda, hidratación y rejuvenecimiento.</li>
+          <li>Masajes — Masajes relajantes y terapéuticos.</li>
+          <li>Tratamientos Corporales — Exfoliaciones, envolturas y tratamientos reductivos.</li>
+          <li>Cejas y Pestañas — Diseño de cejas, laminado, lifting y extensiones.</li>
+        </ul>
+        <h2>Contáctanos</h2>
+        <p>Zona 10, Ciudad de Guatemala — Centro Comercial Eleganza, Local 205</p>
+        <p>Teléfono: +502 2345-6789</p>
+        <p>Correo: info@lfemmeeleganza.com</p>
+        <p>Horario: Lunes a Sábado 9:00 - 19:00</p>
+        <p>
+          <a href="https://instagram.com/lfemme.eleganza">Instagram</a> |
+          <a href="https://facebook.com/lfemmeeleganza">Facebook</a> |
+          <a href="https://tiktok.com/@lfemme.eleganza">TikTok</a>
+        </p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
