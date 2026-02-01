@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { HiCheck, HiOutlineClock } from 'react-icons/hi';
 import type { BookingService } from '../types';
 import { bookingContent } from '../../content/bookingContent';
@@ -10,6 +11,20 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ service, isSelected, onToggle }: ServiceCardProps) {
   const { services: content } = bookingContent;
+  const [expanded, setExpanded] = useState(false);
+  const [isTruncated, setIsTruncated] = useState(false);
+  const descRef = useRef<HTMLParagraphElement>(null);
+
+  const checkTruncation = useCallback(() => {
+    const el = descRef.current;
+    if (el) {
+      setIsTruncated(el.scrollHeight > el.clientHeight);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkTruncation();
+  }, [checkTruncation, service.description]);
 
   return (
     <button
@@ -31,9 +46,34 @@ export default function ServiceCard({ service, isSelected, onToggle }: ServiceCa
       <h3 className="font-serif text-lg text-text-primary mb-1">{service.name}</h3>
 
       {service.description && (
-        <p className="text-text-secondary text-sm font-sans mb-3 line-clamp-2">
-          {service.description}
-        </p>
+        <div className="mb-3">
+          <p
+            ref={descRef}
+            className={`text-text-secondary text-sm font-sans ${expanded ? '' : 'line-clamp-2'}`}
+          >
+            {service.description}
+          </p>
+          {(isTruncated || expanded) && (
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpanded((prev) => !prev);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setExpanded((prev) => !prev);
+                }
+              }}
+              className="text-xs font-sans text-accent hover:opacity-70 transition-opacity cursor-pointer mt-1 inline-block"
+            >
+              {expanded ? 'Ver menos' : 'Ver más'}
+            </span>
+          )}
+        </div>
       )}
 
       <div className="flex items-center gap-4 text-text-secondary text-sm mb-4">
