@@ -1,23 +1,26 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
+import { renderWithRouter } from '../../test/renderWithRouter';
 import Contact from '../Contact';
 
 describe('Contact', () => {
   it('renders section heading', () => {
-    render(<Contact />);
+    renderWithRouter(<Contact />);
     expect(screen.getByText('Contáctanos')).toBeInTheDocument();
   });
 
   it('renders all contact items', () => {
-    render(<Contact />);
+    renderWithRouter(<Contact />);
     expect(screen.getByText('Ubicación')).toBeInTheDocument();
     expect(screen.getByText('Teléfono')).toBeInTheDocument();
     expect(screen.getByText('Correo Electrónico')).toBeInTheDocument();
     expect(screen.getByText('Horario de Atención')).toBeInTheDocument();
   });
 
-  it('uses a button element for the CTA', () => {
-    render(<Contact />);
-    expect(screen.getByRole('button', { name: 'AGENDA TU CITA' })).toBeInTheDocument();
+  it('has a booking CTA link', () => {
+    renderWithRouter(<Contact />);
+    const cta = screen.getByText('AGENDA TU CITA');
+    expect(cta).toBeInTheDocument();
+    expect(cta.closest('a')).toHaveAttribute('href', '/book');
   });
 });

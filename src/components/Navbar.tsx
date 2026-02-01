@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { HiOutlineSparkles, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineMenu, HiOutlineX } from 'react-icons/hi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { siteContent } from '../content/siteContent';
@@ -131,14 +132,13 @@ export default function Navbar({ activeSection }: NavbarProps) {
 
           {/* CTA Button */}
           <div className="hidden lg:block">
-            <a
-              href={nav.cta.href}
-              onClick={(e) => handleNavClick(e, nav.cta.href)}
+            <Link
+              to="/book"
               className="btn-cta text-xs py-2 px-4"
             >
               <HiOutlineCalendar className="w-4 h-4" />
               {nav.cta.label}
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -210,14 +210,14 @@ export default function Navbar({ activeSection }: NavbarProps) {
                 </a>
               );
             })}
-            <a
-              href={nav.cta.href}
-              onClick={(e) => handleNavClick(e, nav.cta.href)}
+            <Link
+              to="/book"
+              onClick={closeMobileMenu}
               className="btn-cta text-xs py-2 px-4 w-full"
             >
               <HiOutlineCalendar className="w-4 h-4" />
               {nav.cta.label}
-            </a>
+            </Link>
           </div>
         </div>
       </div>

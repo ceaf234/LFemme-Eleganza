@@ -15,7 +15,7 @@ export const siteContent = {
     ],
     cta: {
       label: "Reserva tu Cita",
-      href: "#contacto",
+      href: "/book",
     },
   },
 

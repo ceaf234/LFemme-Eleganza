@@ -1,15 +1,8 @@
+import { Link } from 'react-router-dom';
 import { siteContent } from '../content/siteContent';
 
 export default function Hero() {
   const { brand, hero } = siteContent;
-
-  const handleCTAClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const element = document.querySelector('#contacto');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <section
@@ -61,13 +54,9 @@ export default function Hero() {
         </p>
 
         {/* CTA Button */}
-        <a
-          href="#contacto"
-          onClick={handleCTAClick}
-          className="btn-cta text-sm"
-        >
+        <Link to="/book" className="btn-cta text-sm">
           {hero.cta}
-        </a>
+        </Link>
 
         {/* Scroll indicator - positioned below button */}
         <div className="mt-10 md:mt-12 animate-bounce" aria-hidden="true">

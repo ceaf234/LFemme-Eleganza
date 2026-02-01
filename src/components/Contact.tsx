@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { HiOutlineLocationMarker, HiOutlinePhone, HiOutlineMail, HiOutlineClock } from 'react-icons/hi';
 import SectionHeader from './SectionHeader';
 import { siteContent } from '../content/siteContent';
@@ -60,9 +61,9 @@ export default function Contact() {
 
         {/* CTA Button */}
         <div className="text-center mt-16">
-          <button type="button" className="btn-primary">
+          <Link to="/book" className="btn-primary">
             {contact.cta}
-          </button>
+          </Link>
         </div>
       </div>
     </section>
