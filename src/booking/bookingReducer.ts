@@ -10,6 +10,7 @@ const INITIAL_CUSTOMER: CustomerDraft = {
 export function createInitialState(): BookingState {
   return {
     selectedServices: [],
+    selectedStaffId: null,
     selectedDate: null,
     selectedTimeSlot: null,
     customer: { ...INITIAL_CUSTOMER },
@@ -36,6 +37,14 @@ export function bookingReducer(state: BookingState, action: BookingAction): Book
         selectedServices: state.selectedServices.filter(
           (service) => service.id !== action.payload
         ),
+      };
+
+    case 'SET_STAFF':
+      return {
+        ...state,
+        selectedStaffId: action.payload,
+        selectedDate: null,
+        selectedTimeSlot: null,
       };
 
     case 'SET_DATE':

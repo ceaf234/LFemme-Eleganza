@@ -26,7 +26,7 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
       totalPrice,
       totalDuration,
       canProceedToSchedule: state.selectedServices.length > 0,
-      canProceedToConfirm: state.selectedDate !== null && state.selectedTimeSlot !== null,
+      canProceedToConfirm: state.selectedStaffId !== null && state.selectedDate !== null && state.selectedTimeSlot !== null,
     };
   }, [state, dispatch]);
 

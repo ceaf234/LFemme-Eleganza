@@ -37,9 +37,15 @@ export const bookingContent = {
 
   schedule: {
     heading: 'Elige Fecha y Hora',
+    staffLabel: 'Selecciona tu especialista',
+    staffPlaceholder: 'Elige un especialista',
+    loadingStaff: 'Cargando especialistas...',
     dateLabel: 'Selecciona una fecha',
     timeLabel: 'Horarios disponibles',
     noSlots: 'Selecciona un horario para continuar.',
+    loadingSlots: 'Cargando horarios...',
+    noSlotsForDay: 'No hay horarios disponibles para este día',
+    errorLoadingSlots: 'Error al cargar horarios. Intenta de nuevo.',
     sundayClosed: 'Cerrado',
     backLabel: 'REGRESAR',
     continueLabel: 'CONTINUAR',
