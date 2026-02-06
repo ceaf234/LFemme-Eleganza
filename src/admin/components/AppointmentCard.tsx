@@ -5,12 +5,14 @@ import {
   HiOutlinePhone,
   HiOutlineMail,
   HiOutlineAnnotation,
+  HiOutlineClipboardList,
 } from 'react-icons/hi';
 import {
   type AdminAppointment,
   type AppointmentStatus,
   STATUS_CONFIG,
 } from '../hooks/useAdminAppointments';
+import AppointmentHistory from './AppointmentHistory';
 
 interface AppointmentCardProps {
   appointment: AdminAppointment;
@@ -33,6 +35,7 @@ export default function AppointmentCard({
   onNotesChange,
 }: AppointmentCardProps) {
   const [showNotes, setShowNotes] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [notes, setNotes] = useState(appointment.notes || '');
   const [isSavingNotes, setIsSavingNotes] = useState(false);
   const [isChangingStatus, setIsChangingStatus] = useState(false);
@@ -145,43 +148,65 @@ export default function AppointmentCard({
         </div>
       </div>
 
-      {/* Notes toggle */}
-      <div>
+      {/* Notes and History toggles */}
+      <div className="flex items-center gap-4">
         <button
-          onClick={() => setShowNotes(!showNotes)}
+          onClick={() => {
+            setShowNotes(!showNotes);
+            if (!showNotes) setShowHistory(false);
+          }}
           className="flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors"
         >
           <HiOutlineAnnotation className="w-4 h-4" />
           {appointment.notes ? 'Ver/editar notas' : 'Agregar notas'}
         </button>
 
-        {showNotes && (
-          <div className="mt-2 space-y-2">
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={2}
-              className="w-full bg-primary-dark border border-border rounded-md px-3 py-2 text-sm text-text-primary font-sans focus:outline-none focus:border-accent transition-colors resize-none"
-              placeholder="Notas sobre la cita..."
-            />
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowNotes(false)}
-                className="text-xs text-text-muted hover:text-text-primary"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleSaveNotes}
-                disabled={isSavingNotes}
-                className="text-xs text-accent hover:text-accent-light disabled:opacity-50"
-              >
-                {isSavingNotes ? 'Guardando...' : 'Guardar'}
-              </button>
-            </div>
-          </div>
-        )}
+        <button
+          onClick={() => {
+            setShowHistory(!showHistory);
+            if (!showHistory) setShowNotes(false);
+          }}
+          className="flex items-center gap-1 text-xs text-text-muted hover:text-accent transition-colors"
+        >
+          <HiOutlineClipboardList className="w-4 h-4" />
+          Historial
+        </button>
       </div>
+
+      {/* Notes section */}
+      {showNotes && (
+        <div className="mt-2 space-y-2">
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={2}
+            className="w-full bg-primary-dark border border-border rounded-md px-3 py-2 text-sm text-text-primary font-sans focus:outline-none focus:border-accent transition-colors resize-none"
+            placeholder="Notas sobre la cita..."
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowNotes(false)}
+              className="text-xs text-text-muted hover:text-text-primary"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleSaveNotes}
+              disabled={isSavingNotes}
+              className="text-xs text-accent hover:text-accent-light disabled:opacity-50"
+            >
+              {isSavingNotes ? 'Guardando...' : 'Guardar'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* History section */}
+      {showHistory && (
+        <div className="mt-2 border-t border-border pt-2">
+          <AppointmentHistory appointmentId={appointment.id} />
+        </div>
+      )}
     </div>
   );
 }

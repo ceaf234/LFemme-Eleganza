@@ -5,6 +5,7 @@ import {
   HiOutlineUsers,
   HiOutlineSparkles,
   HiOutlineUserGroup,
+  HiOutlineClock,
 } from 'react-icons/hi';
 
 const NAV_ITEMS = [
@@ -13,6 +14,7 @@ const NAV_ITEMS = [
   { path: '/admin/services', label: 'Servicios', icon: HiOutlineSparkles },
   { path: '/admin/staff', label: 'Personal', icon: HiOutlineUserGroup },
   { path: '/admin/clients', label: 'Clientes', icon: HiOutlineUsers },
+  { path: '/admin/blocked-times', label: 'Tiempos Bloqueados', icon: HiOutlineClock },
 ];
 
 export default function AdminLayout() {
