@@ -13,6 +13,8 @@ const AdminLayout = lazy(() => import('./admin/AdminLayout'));
 const AdminDashboard = lazy(() => import('./admin/pages/DashboardPage'));
 const AdminServices = lazy(() => import('./admin/pages/ServicesPage'));
 const AdminStaff = lazy(() => import('./admin/pages/StaffPage'));
+const AdminAppointments = lazy(() => import('./admin/pages/AppointmentsPage'));
+const AdminClients = lazy(() => import('./admin/pages/ClientsPage'));
 
 function App() {
   return (
@@ -46,8 +48,10 @@ function App() {
           }
         >
           <Route index element={<Suspense fallback={null}><AdminDashboard /></Suspense>} />
+          <Route path="appointments" element={<Suspense fallback={null}><AdminAppointments /></Suspense>} />
           <Route path="services" element={<Suspense fallback={null}><AdminServices /></Suspense>} />
           <Route path="staff" element={<Suspense fallback={null}><AdminStaff /></Suspense>} />
+          <Route path="clients" element={<Suspense fallback={null}><AdminClients /></Suspense>} />
         </Route>
       </Routes>
     </BrowserRouter>
