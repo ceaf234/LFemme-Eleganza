@@ -35,6 +35,7 @@ export interface BookingState {
   selectedTimeSlot: string | null; // "HH:mm"
   customer: CustomerDraft;
   isConfirmed: boolean;
+  confirmedAppointmentId: number | null;
 }
 
 export type BookingAction =
@@ -44,5 +45,5 @@ export type BookingAction =
   | { type: 'SET_DATE'; payload: string }
   | { type: 'SET_TIME_SLOT'; payload: string }
   | { type: 'UPDATE_CUSTOMER'; payload: Partial<CustomerDraft> }
-  | { type: 'CONFIRM' }
+  | { type: 'CONFIRM'; payload: number } // appointment ID
   | { type: 'RESET' };

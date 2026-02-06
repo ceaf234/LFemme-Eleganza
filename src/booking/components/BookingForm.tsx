@@ -4,6 +4,7 @@ import { bookingContent } from '../../content/bookingContent';
 
 interface BookingFormProps {
   onSubmit: () => void;
+  isSubmitting?: boolean;
 }
 
 interface FormErrors {
@@ -11,7 +12,7 @@ interface FormErrors {
   phone?: string;
 }
 
-export default function BookingForm({ onSubmit }: BookingFormProps) {
+export default function BookingForm({ onSubmit, isSubmitting = false }: BookingFormProps) {
   const { state, dispatch } = useBooking();
   const { confirm } = bookingContent;
   const [errors, setErrors] = useState<FormErrors>({});
@@ -114,8 +115,12 @@ export default function BookingForm({ onSubmit }: BookingFormProps) {
       </div>
 
       {/* Submit */}
-      <button type="submit" className="btn-cta w-full text-xs">
-        {confirm.submitLabel}
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="btn-cta w-full text-xs disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        {isSubmitting ? 'Confirmando...' : confirm.submitLabel}
       </button>
     </form>
   );

@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBooking } from '../BookingProvider';
+import { useCreateBooking } from '../useCreateBooking';
 import BookingSummary from '../components/BookingSummary';
 import BookingForm from '../components/BookingForm';
 import SuccessScreen from '../components/SuccessScreen';
@@ -9,7 +10,9 @@ import { bookingContent } from '../../content/bookingContent';
 export default function ConfirmPage() {
   const navigate = useNavigate();
   const { state, dispatch, canProceedToConfirm } = useBooking();
+  const { createBooking, loading, error } = useCreateBooking();
   const { confirm } = bookingContent;
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Step guard: redirect if date/time not selected
   useEffect(() => {
@@ -18,12 +21,18 @@ export default function ConfirmPage() {
     }
   }, [canProceedToConfirm, state.isConfirmed, navigate]);
 
-  const handleConfirm = () => {
-    dispatch({ type: 'CONFIRM' });
+  const handleConfirm = async () => {
+    setSubmitError(null);
+    try {
+      const result = await createBooking(state);
+      dispatch({ type: 'CONFIRM', payload: result.appointmentId });
+    } catch (err) {
+      setSubmitError(error || 'Error al confirmar la cita. Por favor intenta de nuevo.');
+    }
   };
 
   if (state.isConfirmed) {
-    return <SuccessScreen />;
+    return <SuccessScreen appointmentId={state.confirmedAppointmentId!} />;
   }
 
   return (
@@ -34,6 +43,13 @@ export default function ConfirmPage() {
           {confirm.heading}
         </h1>
       </div>
+
+      {/* Error message */}
+      {submitError && (
+        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-md">
+          <p className="text-red-400 text-sm text-center">{submitError}</p>
+        </div>
+      )}
 
       {/* Summary + Form side by side */}
       <div className="flex flex-col lg:flex-row gap-8">
@@ -46,14 +62,15 @@ export default function ConfirmPage() {
 
         {/* Form */}
         <div className="flex-1">
-          <BookingForm onSubmit={handleConfirm} />
+          <BookingForm onSubmit={handleConfirm} isSubmitting={loading} />
 
           {/* Back button below form */}
           <div className="mt-6">
             <button
               type="button"
               onClick={() => navigate('/book/schedule')}
-              className="btn-outline text-xs w-full"
+              disabled={loading}
+              className="btn-outline text-xs w-full disabled:opacity-40"
             >
               {confirm.backLabel}
             </button>

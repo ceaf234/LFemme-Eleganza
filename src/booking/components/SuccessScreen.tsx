@@ -1,20 +1,16 @@
-import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { HiCheck } from 'react-icons/hi';
 import { bookingContent } from '../../content/bookingContent';
 
-function generateConfirmationCode(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let code = '';
-  for (let i = 0; i < 6; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
+interface SuccessScreenProps {
+  appointmentId: number;
 }
 
-export default function SuccessScreen() {
+export default function SuccessScreen({ appointmentId }: SuccessScreenProps) {
   const { success } = bookingContent;
-  const code = useMemo(() => generateConfirmationCode(), []);
+
+  // Format appointment ID as confirmation code (e.g., "LF-00123")
+  const confirmationCode = `LF-${String(appointmentId).padStart(5, '0')}`;
 
   return (
     <div className="text-center py-12 px-4 animate-fade-in">
@@ -37,7 +33,7 @@ export default function SuccessScreen() {
           {success.codeLabel}
         </span>
         <span className="text-accent font-mono text-2xl font-bold tracking-widest">
-          {code}
+          {confirmationCode}
         </span>
       </div>
 

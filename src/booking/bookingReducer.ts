@@ -15,6 +15,7 @@ export function createInitialState(): BookingState {
     selectedTimeSlot: null,
     customer: { ...INITIAL_CUSTOMER },
     isConfirmed: false,
+    confirmedAppointmentId: null,
   };
 }
 
@@ -70,6 +71,7 @@ export function bookingReducer(state: BookingState, action: BookingAction): Book
       return {
         ...state,
         isConfirmed: true,
+        confirmedAppointmentId: action.payload,
       };
 
     case 'RESET':
