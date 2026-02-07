@@ -94,8 +94,8 @@ export const bookingContent = {
     voucherDescription: 'Sube una foto o captura de tu comprobante',
     voucherSelectButton: 'Seleccionar imagen',
     voucherChangeButton: 'Cambiar',
-    voucherMaxSize: 'Max 5MB — JPG, PNG o WebP',
-    voucherTooLarge: 'El archivo excede el limite de 5MB',
+    voucherMaxSize: 'Max 1MB — JPG, PNG o WebP',
+    voucherTooLarge: 'El archivo excede el limite de 1MB',
     voucherInvalidType: 'Formato no soportado. Usa JPG, PNG o WebP',
     // Actions
     confirmWithoutPayment: 'CONFIRMAR CITA',

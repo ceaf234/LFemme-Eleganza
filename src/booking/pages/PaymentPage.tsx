@@ -48,8 +48,8 @@ export default function PaymentPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate size (5MB max)
-    if (file.size > 5 * 1024 * 1024) {
+    // Validate size (1MB max)
+    if (file.size > 1 * 1024 * 1024) {
       setFileError(payment.voucherTooLarge);
       return;
     }
