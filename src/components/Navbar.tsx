@@ -128,7 +128,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${link.label} (abre en nueva ventana)`}
-                    className="flex items-center gap-2 text-sm font-sans px-4 py-2 rounded-md bg-[#25D366] text-white hover:bg-[#128C7E] transition-colors"
+                    className="flex items-center justify-center gap-2 text-xs font-sans font-medium tracking-wider uppercase px-4 py-2 rounded-md bg-[#25D366] text-white hover:bg-[#128C7E] transition-colors"
                   >
                     {Icon && <Icon className="w-4 h-4" />}
                     {link.label}
