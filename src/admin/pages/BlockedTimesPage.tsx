@@ -267,7 +267,7 @@ function BlockedTimeCard({
           <div className="flex items-center gap-2 mb-2">
             <HiOutlineUser className="w-4 h-4 text-text-muted" />
             <span className="font-sans text-text-primary font-medium">
-              {blockedTime.staff?.first_name} {blockedTime.staff?.last_name}
+              {blockedTime.staff?.name}
             </span>
             <span className="text-xs text-text-muted bg-primary-dark px-2 py-0.5 rounded">
               {formatDuration(blockedTime.starts_at, blockedTime.ends_at)}

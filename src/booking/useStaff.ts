@@ -22,7 +22,7 @@ export function useStaff(): UseStaffResult {
 
       const { data, error: supabaseError } = await supabase
         .from('staff')
-        .select('id,first_name,last_name')
+        .select('id,name')
         .eq('is_active', true);
 
       if (cancelled) return;

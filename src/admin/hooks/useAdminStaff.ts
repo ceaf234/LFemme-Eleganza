@@ -5,8 +5,7 @@ export type StaffRole = 'owner' | 'provider' | 'receptionist';
 
 export interface AdminStaff {
   id: number;
-  first_name: string;
-  last_name: string;
+  name: string;
   email: string | null;
   phone: string | null;
   role: StaffRole;
@@ -30,8 +29,7 @@ export interface AdminStaff {
 }
 
 export interface StaffFormData {
-  first_name: string;
-  last_name: string;
+  name: string;
   email: string;
   phone: string;
   role: StaffRole;
@@ -76,7 +74,7 @@ export function useAdminStaff(): UseAdminStaffResult {
     const { data, error: fetchError } = await supabase
       .from('staff')
       .select('*')
-      .order('first_name', { ascending: true });
+      .order('name', { ascending: true });
 
     if (fetchError) {
       setError(fetchError.message);
@@ -96,8 +94,7 @@ export function useAdminStaff(): UseAdminStaffResult {
     const { data: newStaff, error: createError } = await supabase
       .from('staff')
       .insert({
-        first_name: data.first_name,
-        last_name: data.last_name,
+        name: data.name,
         email: data.email || null,
         phone: data.phone || null,
         role: data.role,
@@ -111,7 +108,7 @@ export function useAdminStaff(): UseAdminStaffResult {
     // Update local state
     setStaff((prev) =>
       [...prev, newStaff as AdminStaff].sort((a, b) =>
-        a.first_name.localeCompare(b.first_name)
+        a.name.localeCompare(b.name)
       )
     );
 
@@ -139,7 +136,7 @@ export function useAdminStaff(): UseAdminStaffResult {
     setStaff((prev) =>
       prev
         .map((s) => (s.id === id ? (updated as AdminStaff) : s))
-        .sort((a, b) => a.first_name.localeCompare(b.first_name))
+        .sort((a, b) => a.name.localeCompare(b.name))
     );
 
     return updated as AdminStaff;

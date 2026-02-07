@@ -19,7 +19,7 @@ export default function StaffDropdown({
 
   const selected = staff.find((s) => s.id === selectedStaffId);
   const displayText = selected
-    ? `${selected.first_name} ${selected.last_name}`
+    ? selected.name
     : placeholder;
 
   // Close on outside click
@@ -81,7 +81,7 @@ export default function StaffDropdown({
                   : 'border-l-2 border-l-transparent hover:bg-white/5'
               }`}
             >
-              {s.first_name} {s.last_name}
+              {s.name}
             </button>
           );
         })}

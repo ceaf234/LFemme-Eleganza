@@ -10,8 +10,7 @@ export interface AdminBlockedTime {
   created_at: string;
   staff?: {
     id: number;
-    first_name: string;
-    last_name: string;
+    name: string;
   };
 }
 
@@ -46,7 +45,7 @@ export function useAdminBlockedTimes(staffId?: number): UseAdminBlockedTimesResu
         .from('blocked_times')
         .select(`
           *,
-          staff:staff(id, first_name, last_name)
+          staff:staff(id, name)
         `)
         .order('starts_at', { ascending: true });
 
@@ -83,7 +82,7 @@ export function useAdminBlockedTimes(staffId?: number): UseAdminBlockedTimesResu
       })
       .select(`
         *,
-        staff:staff(id, first_name, last_name)
+        staff:staff(id, name)
       `)
       .single();
 
@@ -111,7 +110,7 @@ export function useAdminBlockedTimes(staffId?: number): UseAdminBlockedTimesResu
       .eq('id', id)
       .select(`
         *,
-        staff:staff(id, first_name, last_name)
+        staff:staff(id, name)
       `)
       .single();
 

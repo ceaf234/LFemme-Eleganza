@@ -32,15 +32,13 @@ export interface AdminAppointment {
   updated_at: string;
   client: {
     id: number;
-    first_name: string;
-    last_name: string;
+    name: string;
     email: string | null;
     phone: string | null;
   };
   staff: {
     id: number;
-    first_name: string;
-    last_name: string;
+    name: string;
   };
   appointment_services: AppointmentService[];
 }
@@ -67,8 +65,8 @@ export function useAdminAppointments(dateFilter?: string): UseAdminAppointmentsR
       .from('appointments')
       .select(`
         *,
-        client:clients(id, first_name, last_name, email, phone),
-        staff:staff(id, first_name, last_name),
+        client:clients(id, name, email, phone),
+        staff:staff(id, name),
         appointment_services(
           id,
           service_id,

@@ -309,10 +309,10 @@ function AppointmentRow({ appointment }: AppointmentRowProps) {
       </div>
       <div className="flex-1">
         <span className="text-text-primary">
-          {appointment.client.first_name} {appointment.client.last_name}
+          {appointment.client.name}
         </span>
         <span className="text-text-muted text-sm ml-2">
-          con {appointment.staff.first_name}
+          con {appointment.staff.name}
         </span>
       </div>
       <span

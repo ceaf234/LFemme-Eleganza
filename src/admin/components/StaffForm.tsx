@@ -21,8 +21,7 @@ export default function StaffForm({
   isSubmitting,
 }: StaffFormProps) {
   const [formData, setFormData] = useState<StaffFormData>({
-    first_name: '',
-    last_name: '',
+    name: '',
     email: '',
     phone: '',
     role: 'provider',
@@ -33,8 +32,7 @@ export default function StaffForm({
   useEffect(() => {
     if (staff) {
       setFormData({
-        first_name: staff.first_name,
-        last_name: staff.last_name,
+        name: staff.name,
         email: staff.email || '',
         phone: staff.phone || '',
         role: staff.role,
@@ -46,11 +44,8 @@ export default function StaffForm({
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof StaffFormData, string>> = {};
 
-    if (!formData.first_name.trim()) {
-      newErrors.first_name = 'El nombre es obligatorio';
-    }
-    if (!formData.last_name.trim()) {
-      newErrors.last_name = 'El apellido es obligatorio';
+    if (!formData.name.trim()) {
+      newErrors.name = 'El nombre es obligatorio';
     }
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Email invalido';
@@ -78,49 +73,26 @@ export default function StaffForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      {/* First name & Last name */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label
-            htmlFor="staff-first-name"
-            className="block text-sm text-text-secondary font-sans mb-1"
-          >
-            Nombre *
-          </label>
-          <input
-            id="staff-first-name"
-            type="text"
-            value={formData.first_name}
-            onChange={(e) => handleChange('first_name', e.target.value)}
-            className={`w-full bg-primary-dark border rounded-md px-4 py-2.5 text-sm text-text-primary font-sans focus:outline-none focus:border-accent transition-colors ${
-              errors.first_name ? 'border-red-500' : 'border-border'
-            }`}
-          />
-          {errors.first_name && (
-            <p className="text-red-400 text-xs mt-1">{errors.first_name}</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="staff-last-name"
-            className="block text-sm text-text-secondary font-sans mb-1"
-          >
-            Apellido *
-          </label>
-          <input
-            id="staff-last-name"
-            type="text"
-            value={formData.last_name}
-            onChange={(e) => handleChange('last_name', e.target.value)}
-            className={`w-full bg-primary-dark border rounded-md px-4 py-2.5 text-sm text-text-primary font-sans focus:outline-none focus:border-accent transition-colors ${
-              errors.last_name ? 'border-red-500' : 'border-border'
-            }`}
-          />
-          {errors.last_name && (
-            <p className="text-red-400 text-xs mt-1">{errors.last_name}</p>
-          )}
-        </div>
+      {/* Name */}
+      <div>
+        <label
+          htmlFor="staff-name"
+          className="block text-sm text-text-secondary font-sans mb-1"
+        >
+          Nombre completo *
+        </label>
+        <input
+          id="staff-name"
+          type="text"
+          value={formData.name}
+          onChange={(e) => handleChange('name', e.target.value)}
+          className={`w-full bg-primary-dark border rounded-md px-4 py-2.5 text-sm text-text-primary font-sans focus:outline-none focus:border-accent transition-colors ${
+            errors.name ? 'border-red-500' : 'border-border'
+          }`}
+        />
+        {errors.name && (
+          <p className="text-red-400 text-xs mt-1">{errors.name}</p>
+        )}
       </div>
 
       {/* Email */}

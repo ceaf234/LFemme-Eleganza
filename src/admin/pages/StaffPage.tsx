@@ -157,7 +157,7 @@ export default function StaffPage() {
       {editingSchedule && (
         <div className="mb-8 bg-primary-light border border-border rounded-lg p-6 max-w-xl">
           <h2 className="font-serif text-xl text-text-primary mb-4">
-            Horario de {editingSchedule.first_name} {editingSchedule.last_name}
+            Horario de {editingSchedule.name}
           </h2>
           {formError && (
             <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-md">
@@ -190,7 +190,7 @@ export default function StaffPage() {
                   {/* Name and status */}
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="font-sans font-medium text-text-primary text-lg">
-                      {staffMember.first_name} {staffMember.last_name}
+                      {staffMember.name}
                     </h3>
                     <span className="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded">
                       {ROLE_LABELS[staffMember.role] || staffMember.role}

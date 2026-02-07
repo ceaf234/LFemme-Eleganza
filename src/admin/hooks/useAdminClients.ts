@@ -3,21 +3,21 @@ import { supabase } from '../../lib/supabase';
 
 export interface AdminClient {
   id: number;
-  first_name: string;
-  last_name: string;
+  name: string;
   email: string | null;
   phone: string | null;
   notes: string | null;
+  birthday: string | null;
   created_at: string;
   updated_at: string;
 }
 
 export interface ClientFormData {
-  first_name: string;
-  last_name: string;
+  name: string;
   email: string;
   phone: string;
   notes: string;
+  birthday: string;
 }
 
 interface UseAdminClientsResult {
@@ -26,6 +26,7 @@ interface UseAdminClientsResult {
   error: string | null;
   refetch: () => void;
   searchClients: (query: string) => void;
+  createClient: (data: ClientFormData) => Promise<AdminClient>;
   updateClient: (id: number, data: Partial<ClientFormData>) => Promise<AdminClient>;
 }
 
@@ -42,13 +43,13 @@ export function useAdminClients(): UseAdminClientsResult {
     let query = supabase
       .from('clients')
       .select('*')
-      .order('first_name', { ascending: true });
+      .order('name', { ascending: true });
 
     // Apply search filter
     if (searchQuery.trim()) {
       const search = `%${searchQuery.trim()}%`;
       query = query.or(
-        `first_name.ilike.${search},last_name.ilike.${search},email.ilike.${search},phone.ilike.${search}`
+        `name.ilike.${search},email.ilike.${search},phone.ilike.${search}`
       );
     }
 
@@ -72,6 +73,31 @@ export function useAdminClients(): UseAdminClientsResult {
     setSearchQuery(query);
   };
 
+  const createClient = async (data: ClientFormData): Promise<AdminClient> => {
+    const { data: newClient, error: createError } = await supabase
+      .from('clients')
+      .insert({
+        name: data.name,
+        email: data.email || null,
+        phone: data.phone || null,
+        notes: data.notes || null,
+        birthday: data.birthday || null,
+      })
+      .select()
+      .single();
+
+    if (createError) throw new Error(createError.message);
+
+    // Update local state
+    setClients((prev) =>
+      [...prev, newClient as AdminClient].sort((a, b) =>
+        a.name.localeCompare(b.name)
+      )
+    );
+
+    return newClient as AdminClient;
+  };
+
   const updateClient = async (
     id: number,
     data: Partial<ClientFormData>
@@ -83,6 +109,7 @@ export function useAdminClients(): UseAdminClientsResult {
         email: data.email || null,
         phone: data.phone || null,
         notes: data.notes || null,
+        birthday: data.birthday || null,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
@@ -95,7 +122,7 @@ export function useAdminClients(): UseAdminClientsResult {
     setClients((prev) =>
       prev
         .map((c) => (c.id === id ? (updated as AdminClient) : c))
-        .sort((a, b) => a.first_name.localeCompare(b.first_name))
+        .sort((a, b) => a.name.localeCompare(b.name))
     );
 
     return updated as AdminClient;
@@ -107,6 +134,7 @@ export function useAdminClients(): UseAdminClientsResult {
     error,
     refetch: fetchClients,
     searchClients,
+    createClient,
     updateClient,
   };
 }

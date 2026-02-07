@@ -10,8 +10,7 @@ export interface AppointmentHistoryEntry {
   changed_by: number | null;
   staff?: {
     id: number;
-    first_name: string;
-    last_name: string;
+    name: string;
   } | null;
 }
 
@@ -42,7 +41,7 @@ export function useAppointmentHistory(appointmentId: number): UseAppointmentHist
         .from('appointment_history')
         .select(`
           *,
-          staff:staff(id, first_name, last_name)
+          staff:staff(id, name)
         `)
         .eq('appointment_id', appointmentId)
         .order('changed_at', { ascending: false });
@@ -77,7 +76,7 @@ export function useRecentAppointmentHistory(limit: number = 50) {
     appointment?: {
       id: number;
       starts_at: string;
-      client: { first_name: string; last_name: string } | null;
+      client: { name: string } | null;
     };
   })[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,11 +91,11 @@ export function useRecentAppointmentHistory(limit: number = 50) {
         .from('appointment_history')
         .select(`
           *,
-          staff:staff(id, first_name, last_name),
+          staff:staff(id, name),
           appointment:appointments(
             id,
             starts_at,
-            client:clients(first_name, last_name)
+            client:clients(name)
           )
         `)
         .order('changed_at', { ascending: false })

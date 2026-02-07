@@ -1,5 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
-import { HiSearch, HiPencil, HiOutlineMail, HiOutlinePhone } from 'react-icons/hi';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import {
+  HiSearch,
+  HiPencil,
+  HiPlus,
+  HiSortAscending,
+  HiSortDescending,
+  HiOutlineMail,
+  HiOutlinePhone,
+} from 'react-icons/hi';
 import {
   useAdminClients,
   type AdminClient,
@@ -9,12 +17,15 @@ import ClientForm from '../components/ClientForm';
 import { formatGTDisplayDate } from '../../lib/datetime';
 
 export default function ClientsPage() {
-  const { clients, loading, error, searchClients, updateClient } = useAdminClients();
+  const { clients, loading, error, searchClients, createClient, updateClient } =
+    useAdminClients();
 
   const [searchInput, setSearchInput] = useState('');
   const [editingClient, setEditingClient] = useState<AdminClient | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -34,17 +45,50 @@ export default function ClientsPage() {
     };
   }, [searchInput, searchClients]);
 
+  // Sort clients locally
+  const sortedClients = useMemo(
+    () =>
+      [...clients].sort((a, b) =>
+        sortOrder === 'asc'
+          ? a.name.localeCompare(b.name)
+          : b.name.localeCompare(a.name)
+      ),
+    [clients, sortOrder]
+  );
+
+  const handleCreate = () => {
+    setShowCreateForm(true);
+    setEditingClient(null);
+    setFormError(null);
+  };
+
   const handleEdit = (client: AdminClient) => {
     setEditingClient(client);
+    setShowCreateForm(false);
     setFormError(null);
   };
 
   const handleCancel = () => {
     setEditingClient(null);
+    setShowCreateForm(false);
     setFormError(null);
   };
 
-  const handleSubmit = async (data: Partial<ClientFormData>) => {
+  const handleCreateSubmit = async (data: ClientFormData) => {
+    setIsSubmitting(true);
+    setFormError(null);
+
+    try {
+      await createClient(data);
+      setShowCreateForm(false);
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : 'Error al crear cliente');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEditSubmit = async (data: ClientFormData) => {
     if (!editingClient) return;
 
     setIsSubmitting(true);
@@ -65,11 +109,20 @@ export default function ClientsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-serif text-3xl text-text-primary">Clientes</h1>
+        {!showCreateForm && !editingClient && (
+          <button
+            onClick={handleCreate}
+            className="btn-cta text-xs flex items-center gap-2"
+          >
+            <HiPlus className="w-4 h-4" />
+            Nuevo cliente
+          </button>
+        )}
       </div>
 
-      {/* Search */}
-      <div className="mb-6">
-        <div className="relative max-w-md">
+      {/* Search + Sort */}
+      <div className="mb-6 flex items-center gap-3">
+        <div className="relative max-w-md flex-1">
           <HiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
           <input
             type="text"
@@ -79,13 +132,44 @@ export default function ClientsPage() {
             className="w-full bg-primary-dark border border-border rounded-md pl-10 pr-4 py-2.5 text-sm text-text-primary font-sans focus:outline-none focus:border-accent transition-colors"
           />
         </div>
+        <button
+          onClick={() => setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
+          className="p-2.5 rounded-md border border-border text-text-secondary hover:text-accent hover:border-accent/50 transition-colors"
+          title={sortOrder === 'asc' ? 'Ordenar Z-A' : 'Ordenar A-Z'}
+        >
+          {sortOrder === 'asc' ? (
+            <HiSortAscending className="w-5 h-5" />
+          ) : (
+            <HiSortDescending className="w-5 h-5" />
+          )}
+        </button>
       </div>
+
+      {/* Create form */}
+      {showCreateForm && (
+        <div className="mb-8 bg-primary-light border border-border rounded-lg p-6 max-w-xl">
+          <h2 className="font-serif text-xl text-text-primary mb-4">
+            Nuevo cliente
+          </h2>
+          {formError && (
+            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-md">
+              <p className="text-red-400 text-sm">{formError}</p>
+            </div>
+          )}
+          <ClientForm
+            onSubmit={handleCreateSubmit}
+            onCancel={handleCancel}
+            isSubmitting={isSubmitting}
+            mode="create"
+          />
+        </div>
+      )}
 
       {/* Edit form */}
       {editingClient && (
         <div className="mb-8 bg-primary-light border border-border rounded-lg p-6 max-w-xl">
           <h2 className="font-serif text-xl text-text-primary mb-4">
-            Editar cliente: {editingClient.first_name} {editingClient.last_name}
+            Editar cliente: {editingClient.name}
           </h2>
           {formError && (
             <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-md">
@@ -94,9 +178,10 @@ export default function ClientsPage() {
           )}
           <ClientForm
             client={editingClient}
-            onSubmit={handleSubmit}
+            onSubmit={handleEditSubmit}
             onCancel={handleCancel}
             isSubmitting={isSubmitting}
+            mode="edit"
           />
         </div>
       )}
@@ -129,20 +214,23 @@ export default function ClientsPage() {
                   Notas
                 </th>
                 <th className="text-left py-3 px-4 text-xs text-text-muted font-sans font-medium uppercase tracking-wide">
+                  Cumpleanos
+                </th>
+                <th className="text-left py-3 px-4 text-xs text-text-muted font-sans font-medium uppercase tracking-wide">
                   Desde
                 </th>
                 <th className="py-3 px-4"></th>
               </tr>
             </thead>
             <tbody>
-              {clients.map((client) => (
+              {sortedClients.map((client) => (
                 <tr
                   key={client.id}
                   className="border-b border-border/50 hover:bg-primary-light/50 transition-colors"
                 >
                   <td className="py-4 px-4">
                     <span className="font-sans text-text-primary">
-                      {client.first_name} {client.last_name}
+                      {client.name}
                     </span>
                   </td>
                   <td className="py-4 px-4">
@@ -168,6 +256,15 @@ export default function ClientsPage() {
                     {client.notes ? (
                       <span className="text-sm text-text-secondary line-clamp-2">
                         {client.notes}
+                      </span>
+                    ) : (
+                      <span className="text-sm text-text-muted italic">-</span>
+                    )}
+                  </td>
+                  <td className="py-4 px-4">
+                    {client.birthday ? (
+                      <span className="text-sm text-text-secondary">
+                        {client.birthday}
                       </span>
                     ) : (
                       <span className="text-sm text-text-muted italic">-</span>

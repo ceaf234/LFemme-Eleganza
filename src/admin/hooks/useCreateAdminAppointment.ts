@@ -7,8 +7,7 @@ export interface AdminAppointmentFormData {
   clientMode: 'existing' | 'new';
   selectedClientId: number | null;
   newClient: {
-    first_name: string;
-    last_name: string;
+    name: string;
     phone: string;
     email: string;
   };
@@ -61,8 +60,7 @@ export function useCreateAdminAppointment(): UseCreateAdminAppointmentResult {
 
           // Update client info
           const updatePayload: Record<string, unknown> = {
-            first_name: data.newClient.first_name,
-            last_name: data.newClient.last_name,
+            name: data.newClient.name,
             updated_at: new Date().toISOString(),
           };
           if (data.newClient.email?.trim()) {
@@ -75,8 +73,7 @@ export function useCreateAdminAppointment(): UseCreateAdminAppointmentResult {
           const { data: newClient, error: clientError } = await supabase
             .from('clients')
             .insert({
-              first_name: data.newClient.first_name,
-              last_name: data.newClient.last_name,
+              name: data.newClient.name,
               email: data.newClient.email?.trim() || null,
               phone: normalizedPhone,
             })

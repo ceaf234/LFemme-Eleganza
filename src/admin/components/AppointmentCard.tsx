@@ -103,7 +103,7 @@ export default function AppointmentCard({
         <div className="flex items-center gap-2 mb-1">
           <HiOutlineUser className="w-4 h-4 text-text-muted" />
           <span className="font-sans text-text-primary">
-            {appointment.client.first_name} {appointment.client.last_name}
+            {appointment.client.name}
           </span>
         </div>
         <div className="flex flex-wrap gap-3 text-sm text-text-secondary">
@@ -124,7 +124,7 @@ export default function AppointmentCard({
 
       {/* Staff */}
       <div className="text-sm text-text-muted mb-3">
-        Con: {appointment.staff.first_name} {appointment.staff.last_name}
+        Con: {appointment.staff.name}
       </div>
 
       {/* Services */}

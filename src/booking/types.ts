@@ -11,8 +11,7 @@ export interface BookingService {
 
 export interface StaffMember {
   id: number;
-  first_name: string;
-  last_name: string;
+  name: string;
 }
 
 export interface AvailableSlot {

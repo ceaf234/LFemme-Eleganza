@@ -23,12 +23,7 @@ export function useCreateBooking(): UseCreateBookingResult {
     setError(null);
 
     try {
-      // 1. Parse customer name into first/last
-      const nameParts = state.customer.name.trim().split(/\s+/);
-      const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || '';
-
-      // 2. Upsert client by phone (primary identifier)
+      // 1. Upsert client by phone (primary identifier)
       let clientId: number;
       const normalizedPhone = state.customer.phone.replace(/\D/g, '');
 
@@ -43,8 +38,7 @@ export function useCreateBooking(): UseCreateBookingResult {
 
         // Update client info — only overwrite email if a new one is provided
         const updatePayload: Record<string, unknown> = {
-          first_name: firstName,
-          last_name: lastName,
+          name: state.customer.name.trim(),
           updated_at: new Date().toISOString(),
         };
         if (state.customer.email?.trim()) {
@@ -60,8 +54,7 @@ export function useCreateBooking(): UseCreateBookingResult {
         const { data: newClient, error: clientError } = await supabase
           .from('clients')
           .insert({
-            first_name: firstName,
-            last_name: lastName,
+            name: state.customer.name.trim(),
             email: state.customer.email?.trim() || null,
             phone: normalizedPhone,
             notes: state.customer.notes || null,

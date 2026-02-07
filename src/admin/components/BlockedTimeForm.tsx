@@ -112,7 +112,7 @@ export default function BlockedTimeForm({
           </option>
           {activeStaff.map((staff) => (
             <option key={staff.id} value={staff.id}>
-              {staff.first_name} {staff.last_name}
+              {staff.name}
             </option>
           ))}
         </select>

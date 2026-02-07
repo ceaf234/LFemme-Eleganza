@@ -7,8 +7,7 @@ import type { AdminAppointmentFormData } from '../hooks/useCreateAdminAppointmen
 
 interface ClientSearchResult {
   id: number;
-  first_name: string;
-  last_name: string;
+  name: string;
   phone: string | null;
   email: string | null;
 }
@@ -53,8 +52,7 @@ export default function AdminAppointmentForm({
   const [showDropdown, setShowDropdown] = useState(false);
 
   const [newClient, setNewClient] = useState({
-    first_name: '',
-    last_name: '',
+    name: '',
     phone: '',
     email: '',
   });
@@ -87,9 +85,9 @@ export default function AdminAppointmentForm({
 
       const { data } = await supabase
         .from('clients')
-        .select('id, first_name, last_name, phone, email')
+        .select('id, name, phone, email')
         .or(
-          `first_name.ilike.${search},last_name.ilike.${search},email.ilike.${search},phone.ilike.${search}`
+          `name.ilike.${search},email.ilike.${search},phone.ilike.${search}`
         )
         .limit(10);
 
@@ -133,13 +131,13 @@ export default function AdminAppointmentForm({
     const dayEnd = selectedStaff[endKey] as string | null;
 
     if (!dayStart || !dayEnd) {
-      setScheduleWarning(`${selectedStaff.first_name} no trabaja este dia.`);
+      setScheduleWarning(`${selectedStaff.name} no trabaja este dia.`);
       return;
     }
 
     if (time < dayStart || time >= dayEnd) {
       setScheduleWarning(
-        `Horario fuera del turno de ${selectedStaff.first_name} (${dayStart} - ${dayEnd}).`
+        `Horario fuera del turno de ${selectedStaff.name} (${dayStart} - ${dayEnd}).`
       );
       return;
     }
@@ -149,7 +147,7 @@ export default function AdminAppointmentForm({
 
   const handleSelectClient = (client: ClientSearchResult) => {
     setSelectedClientId(client.id);
-    setSelectedClientName(`${client.first_name} ${client.last_name}`);
+    setSelectedClientName(client.name);
     setSearchQuery('');
     setShowDropdown(false);
     setErrors((prev) => ({ ...prev, client: '' }));
@@ -185,7 +183,7 @@ export default function AdminAppointmentForm({
       newErrors.client = 'Selecciona un cliente.';
     }
     if (clientMode === 'new') {
-      if (!newClient.first_name.trim()) newErrors.first_name = 'Nombre es obligatorio.';
+      if (!newClient.name.trim()) newErrors.name = 'Nombre es obligatorio.';
       const digits = normalizePhone(newClient.phone);
       if (digits.length !== 8) newErrors.phone = 'El telefono debe tener 8 digitos.';
     }
@@ -229,7 +227,7 @@ export default function AdminAppointmentForm({
         <div className="flex gap-2 mb-3">
           <button
             type="button"
-            onClick={() => { setClientMode('existing'); setErrors((prev) => ({ ...prev, client: '', first_name: '', phone: '' })); }}
+            onClick={() => { setClientMode('existing'); setErrors((prev) => ({ ...prev, client: '', name: '', phone: '' })); }}
             className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${
               clientMode === 'existing'
                 ? 'border-accent bg-accent/10 text-accent'
@@ -240,7 +238,7 @@ export default function AdminAppointmentForm({
           </button>
           <button
             type="button"
-            onClick={() => { setClientMode('new'); setErrors((prev) => ({ ...prev, client: '', first_name: '', phone: '' })); }}
+            onClick={() => { setClientMode('new'); setErrors((prev) => ({ ...prev, client: '', name: '', phone: '' })); }}
             className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${
               clientMode === 'new'
                 ? 'border-accent bg-accent/10 text-accent'
@@ -287,7 +285,7 @@ export default function AdminAppointmentForm({
                           className="w-full text-left px-3 py-2 hover:bg-accent/10 transition-colors"
                         >
                           <div className="text-text-primary text-sm">
-                            {client.first_name} {client.last_name}
+                            {client.name}
                           </div>
                           <div className="text-text-muted text-xs">
                             {client.phone && formatPhoneDisplay(client.phone)}
@@ -305,26 +303,15 @@ export default function AdminAppointmentForm({
           </div>
         ) : (
           <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <input
-                  type="text"
-                  value={newClient.first_name}
-                  onChange={(e) => { setNewClient((prev) => ({ ...prev, first_name: e.target.value })); setErrors((prev) => ({ ...prev, first_name: '' })); }}
-                  placeholder="Nombre *"
-                  className={`w-full px-3 py-2 bg-primary border rounded-md text-text-primary text-sm focus:border-accent focus:outline-none ${errors.first_name ? 'border-red-500' : 'border-border'}`}
-                />
-                {errors.first_name && <p className="text-red-400 text-xs mt-1">{errors.first_name}</p>}
-              </div>
-              <div>
-                <input
-                  type="text"
-                  value={newClient.last_name}
-                  onChange={(e) => setNewClient((prev) => ({ ...prev, last_name: e.target.value }))}
-                  placeholder="Apellido"
-                  className="w-full px-3 py-2 bg-primary border border-border rounded-md text-text-primary text-sm focus:border-accent focus:outline-none"
-                />
-              </div>
+            <div>
+              <input
+                type="text"
+                value={newClient.name}
+                onChange={(e) => { setNewClient((prev) => ({ ...prev, name: e.target.value })); setErrors((prev) => ({ ...prev, name: '' })); }}
+                placeholder="Nombre completo *"
+                className={`w-full px-3 py-2 bg-primary border rounded-md text-text-primary text-sm focus:border-accent focus:outline-none ${errors.name ? 'border-red-500' : 'border-border'}`}
+              />
+              {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
             </div>
             <div>
               <input
@@ -359,7 +346,7 @@ export default function AdminAppointmentForm({
           <option value={0}>Seleccionar personal</option>
           {activeStaff.map((s) => (
             <option key={s.id} value={s.id}>
-              {s.first_name} {s.last_name}
+              {s.name}
             </option>
           ))}
         </select>

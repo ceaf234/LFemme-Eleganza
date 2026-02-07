@@ -32,12 +32,10 @@ export interface TodayAppointment {
   ends_at: string;
   status: string;
   client: {
-    first_name: string;
-    last_name: string;
+    name: string;
   };
   staff: {
-    first_name: string;
-    last_name: string;
+    name: string;
   };
 }
 
@@ -47,14 +45,14 @@ interface RawTodayAppointment {
   starts_at: string;
   ends_at: string;
   status: string;
-  client: { first_name: string; last_name: string } | null;
-  staff: { first_name: string; last_name: string } | null;
+  client: { name: string } | null;
+  staff: { name: string } | null;
 }
 
 interface RawStaffAppointment {
   staff_id: number;
   status: string;
-  staff: { id: number; first_name: string; last_name: string } | null;
+  staff: { id: number; name: string } | null;
   appointment_services: { price: number }[];
 }
 
@@ -115,8 +113,8 @@ export function useDashboardMetrics(): UseDashboardMetricsResult {
           starts_at,
           ends_at,
           status,
-          client:clients(first_name, last_name),
-          staff:staff(first_name, last_name)
+          client:clients(name),
+          staff:staff(name)
         `)
         .gte('starts_at', todayRange.start)
         .lt('starts_at', todayRange.end)
@@ -210,7 +208,7 @@ export function useDashboardMetrics(): UseDashboardMetricsResult {
       .select(`
         staff_id,
         status,
-        staff:staff(id, first_name, last_name),
+        staff:staff(id, name),
         appointment_services(price)
       `)
       .gte('starts_at', start)
@@ -229,7 +227,7 @@ export function useDashboardMetrics(): UseDashboardMetricsResult {
       if (!staffMap.has(staffId)) {
         staffMap.set(staffId, {
           staffId,
-          staffName: `${staffData.first_name} ${staffData.last_name}`,
+          staffName: staffData.name,
           appointmentsCount: 0,
           completedCount: 0,
           revenue: 0,

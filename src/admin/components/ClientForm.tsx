@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import type { AdminClient, ClientFormData } from '../hooks/useAdminClients';
 
 interface ClientFormProps {
-  client: AdminClient;
-  onSubmit: (data: Partial<ClientFormData>) => Promise<void>;
+  client?: AdminClient | null;
+  onSubmit: (data: ClientFormData) => Promise<void>;
   onCancel: () => void;
   isSubmitting: boolean;
+  mode?: 'edit' | 'create';
 }
 
 export default function ClientForm({
@@ -13,37 +14,40 @@ export default function ClientForm({
   onSubmit,
   onCancel,
   isSubmitting,
+  mode = 'edit',
 }: ClientFormProps) {
   const [formData, setFormData] = useState<ClientFormData>({
-    first_name: '',
-    last_name: '',
+    name: '',
     email: '',
     phone: '',
     notes: '',
+    birthday: '',
   });
   const [errors, setErrors] = useState<Partial<Record<keyof ClientFormData, string>>>({});
 
   useEffect(() => {
-    setFormData({
-      first_name: client.first_name,
-      last_name: client.last_name,
-      email: client.email || '',
-      phone: client.phone || '',
-      notes: client.notes || '',
-    });
+    if (client) {
+      setFormData({
+        name: client.name,
+        email: client.email || '',
+        phone: client.phone || '',
+        notes: client.notes || '',
+        birthday: client.birthday || '',
+      });
+    }
   }, [client]);
 
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof ClientFormData, string>> = {};
 
-    if (!formData.first_name.trim()) {
-      newErrors.first_name = 'El nombre es obligatorio';
-    }
-    if (!formData.last_name.trim()) {
-      newErrors.last_name = 'El apellido es obligatorio';
+    if (!formData.name.trim()) {
+      newErrors.name = 'El nombre es obligatorio';
     }
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Email invalido';
+    }
+    if (formData.birthday && !/^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])$/.test(formData.birthday)) {
+      newErrors.birthday = 'Formato invalido (MM/DD)';
     }
 
     setErrors(newErrors);
@@ -65,49 +69,26 @@ export default function ClientForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/* First name & Last name */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label
-            htmlFor="client-first-name"
-            className="block text-sm text-text-secondary font-sans mb-1"
-          >
-            Nombre *
-          </label>
-          <input
-            id="client-first-name"
-            type="text"
-            value={formData.first_name}
-            onChange={(e) => handleChange('first_name', e.target.value)}
-            className={`w-full bg-primary-dark border rounded-md px-4 py-2.5 text-sm text-text-primary font-sans focus:outline-none focus:border-accent transition-colors ${
-              errors.first_name ? 'border-red-500' : 'border-border'
-            }`}
-          />
-          {errors.first_name && (
-            <p className="text-red-400 text-xs mt-1">{errors.first_name}</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="client-last-name"
-            className="block text-sm text-text-secondary font-sans mb-1"
-          >
-            Apellido *
-          </label>
-          <input
-            id="client-last-name"
-            type="text"
-            value={formData.last_name}
-            onChange={(e) => handleChange('last_name', e.target.value)}
-            className={`w-full bg-primary-dark border rounded-md px-4 py-2.5 text-sm text-text-primary font-sans focus:outline-none focus:border-accent transition-colors ${
-              errors.last_name ? 'border-red-500' : 'border-border'
-            }`}
-          />
-          {errors.last_name && (
-            <p className="text-red-400 text-xs mt-1">{errors.last_name}</p>
-          )}
-        </div>
+      {/* Name */}
+      <div>
+        <label
+          htmlFor="client-name"
+          className="block text-sm text-text-secondary font-sans mb-1"
+        >
+          Nombre completo *
+        </label>
+        <input
+          id="client-name"
+          type="text"
+          value={formData.name}
+          onChange={(e) => handleChange('name', e.target.value)}
+          className={`w-full bg-primary-dark border rounded-md px-4 py-2.5 text-sm text-text-primary font-sans focus:outline-none focus:border-accent transition-colors ${
+            errors.name ? 'border-red-500' : 'border-border'
+          }`}
+        />
+        {errors.name && (
+          <p className="text-red-400 text-xs mt-1">{errors.name}</p>
+        )}
       </div>
 
       {/* Email */}
@@ -149,6 +130,30 @@ export default function ClientForm({
         />
       </div>
 
+      {/* Birthday */}
+      <div>
+        <label
+          htmlFor="client-birthday"
+          className="block text-sm text-text-secondary font-sans mb-1"
+        >
+          Cumpleanos
+        </label>
+        <input
+          id="client-birthday"
+          type="text"
+          value={formData.birthday}
+          onChange={(e) => handleChange('birthday', e.target.value)}
+          placeholder="MM/DD"
+          maxLength={5}
+          className={`w-full bg-primary-dark border rounded-md px-4 py-2.5 text-sm text-text-primary font-sans focus:outline-none focus:border-accent transition-colors ${
+            errors.birthday ? 'border-red-500' : 'border-border'
+          }`}
+        />
+        {errors.birthday && (
+          <p className="text-red-400 text-xs mt-1">{errors.birthday}</p>
+        )}
+      </div>
+
       {/* Notes */}
       <div>
         <label
@@ -182,7 +187,11 @@ export default function ClientForm({
           disabled={isSubmitting}
           className="flex-1 btn-cta text-xs disabled:opacity-60"
         >
-          {isSubmitting ? 'Guardando...' : 'Guardar cambios'}
+          {isSubmitting
+            ? 'Guardando...'
+            : mode === 'create'
+            ? 'Crear cliente'
+            : 'Guardar cambios'}
         </button>
       </div>
     </form>

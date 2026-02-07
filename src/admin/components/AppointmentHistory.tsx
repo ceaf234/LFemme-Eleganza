@@ -63,7 +63,7 @@ export default function AppointmentHistory({ appointmentId }: AppointmentHistory
               <span>{formatGTShortDateTime(entry.changed_at)}</span>
               {entry.staff && (
                 <span>
-                  por {entry.staff.first_name} {entry.staff.last_name}
+                  por {entry.staff.name}
                 </span>
               )}
             </div>
