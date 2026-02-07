@@ -6,17 +6,16 @@ import {
   type AppointmentStatus,
 } from '../hooks/useAdminAppointments';
 import AppointmentCard from '../components/AppointmentCard';
+import { formatGTDate } from '../../lib/datetime';
 
 function formatDate(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return formatGTDate(date);
 }
 
 function formatDisplayDate(dateStr: string): string {
-  const date = new Date(dateStr + 'T12:00:00');
+  const date = new Date(dateStr + 'T12:00:00-06:00');
   return date.toLocaleDateString('es-GT', {
+    timeZone: 'America/Guatemala',
     weekday: 'long',
     year: 'numeric',
     month: 'long',

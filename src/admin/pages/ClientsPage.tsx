@@ -6,6 +6,7 @@ import {
   type ClientFormData,
 } from '../hooks/useAdminClients';
 import ClientForm from '../components/ClientForm';
+import { formatGTDisplayDate } from '../../lib/datetime';
 
 export default function ClientsPage() {
   const { clients, loading, error, searchClients, updateClient } = useAdminClients();
@@ -57,15 +58,6 @@ export default function ClientsPage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const formatDate = (isoString: string) => {
-    const date = new Date(isoString);
-    return date.toLocaleDateString('es-GT', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
   };
 
   return (
@@ -183,7 +175,7 @@ export default function ClientsPage() {
                   </td>
                   <td className="py-4 px-4">
                     <span className="text-sm text-text-muted">
-                      {formatDate(client.created_at)}
+                      {formatGTDisplayDate(client.created_at)}
                     </span>
                   </td>
                   <td className="py-4 px-4">

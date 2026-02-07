@@ -10,6 +10,7 @@ import {
 } from 'react-icons/hi';
 import { useDashboardMetrics, type TodayAppointment } from '../hooks/useDashboardMetrics';
 import { STATUS_CONFIG } from '../hooks/useAdminAppointments';
+import { formatGTTime } from '../../lib/datetime';
 
 export default function DashboardPage() {
   const {
@@ -42,11 +43,6 @@ export default function DashboardPage() {
   }
 
   const formatCurrency = (amount: number) => `Q${amount.toLocaleString('es-GT')}`;
-
-  const formatTime = (isoString: string) => {
-    const date = new Date(isoString);
-    return date.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit' });
-  };
 
   return (
     <div className="p-8 space-y-8">
@@ -310,7 +306,7 @@ function AppointmentRow({ appointment, formatTime }: AppointmentRowProps) {
     <div className="p-4 flex items-center gap-4">
       <div className="flex items-center gap-2 text-text-muted min-w-[100px]">
         <HiOutlineClock className="w-4 h-4" />
-        <span className="text-sm">{formatTime(appointment.starts_at)}</span>
+        <span className="text-sm">{formatGTTime(appointment.starts_at)}</span>
       </div>
       <div className="flex-1">
         <span className="text-text-primary">

@@ -21,6 +21,15 @@ export default function ConfirmPage() {
     }
   }, [canProceedToConfirm, state.isConfirmed, navigate]);
 
+  // Reset booking state when leaving the confirm page after a successful booking
+  useEffect(() => {
+    return () => {
+      if (state.isConfirmed) {
+        dispatch({ type: 'RESET' });
+      }
+    };
+  }, [state.isConfirmed, dispatch]);
+
   const handleConfirm = async () => {
     setSubmitError(null);
     try {

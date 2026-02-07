@@ -60,8 +60,8 @@ export const bookingContent = {
     formTitle: 'Tus datos de contacto',
     fields: {
       name: { label: 'Nombre completo', placeholder: 'Tu nombre completo' },
-      phone: { label: 'Teléfono', placeholder: '+502 ...' },
-      email: { label: 'Correo electrónico', placeholder: 'tu@email.com' },
+      phone: { label: 'Teléfono', placeholder: 'XXXX-XXXX' },
+      email: { label: 'Correo electrónico (opcional)', placeholder: 'tu@email.com' },
       notes: { label: 'Notas (opcional)', placeholder: 'Alergias, preferencias...' },
     },
     requiredMessage: 'Este campo es obligatorio.',

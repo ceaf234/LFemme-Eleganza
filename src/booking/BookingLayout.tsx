@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { HiOutlineArrowLeft } from 'react-icons/hi';
 import ProgressIndicator from './components/ProgressIndicator';
+import ErrorBoundary from '../components/ErrorBoundary';
 import { bookingContent } from '../content/bookingContent';
 
 const { layout } = bookingContent;
@@ -42,7 +43,23 @@ export default function BookingLayout() {
 
       {/* Page content */}
       <main className="flex-1 pb-16">
-        <Outlet />
+        <ErrorBoundary
+          fallback={
+            <div className="text-center py-16 px-4">
+              <h1 className="font-serif text-2xl text-text-primary mb-3">
+                Algo salio mal
+              </h1>
+              <p className="text-text-secondary font-sans text-sm mb-6">
+                Ocurrio un error al procesar tu reserva. Por favor, intenta de nuevo.
+              </p>
+              <a href="/book" className="btn-outline text-xs inline-block">
+                Reiniciar reserva
+              </a>
+            </div>
+          }
+        >
+          <Outlet />
+        </ErrorBoundary>
       </main>
     </div>
   );

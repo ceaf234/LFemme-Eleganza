@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { AdminBlockedTime, BlockedTimeFormData } from '../hooks/useAdminBlockedTimes';
 import type { AdminStaff } from '../hooks/useAdminStaff';
+import { isoToDatetimeLocal, localInputToGTISO } from '../../lib/datetime';
 
 interface BlockedTimeFormProps {
   blockedTime?: AdminBlockedTime | null;
@@ -27,14 +28,11 @@ export default function BlockedTimeForm({
 
   useEffect(() => {
     if (blockedTime) {
-      // Parse ISO dates to local datetime-local format
-      const startsAt = new Date(blockedTime.starts_at);
-      const endsAt = new Date(blockedTime.ends_at);
-
+      // Parse ISO dates to datetime-local format in Guatemala timezone
       setFormData({
         staff_id: blockedTime.staff_id,
-        starts_at: formatDateTimeLocal(startsAt),
-        ends_at: formatDateTimeLocal(endsAt),
+        starts_at: isoToDatetimeLocal(blockedTime.starts_at),
+        ends_at: isoToDatetimeLocal(blockedTime.ends_at),
         reason: blockedTime.reason || '',
       });
     } else if (staffList.length > 0) {
@@ -45,15 +43,6 @@ export default function BlockedTimeForm({
       }));
     }
   }, [blockedTime, staffList]);
-
-  const formatDateTimeLocal = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
 
   const validate = (): boolean => {
     const newErrors: Partial<Record<keyof BlockedTimeFormData, string>> = {};
@@ -83,14 +72,11 @@ export default function BlockedTimeForm({
     e.preventDefault();
     if (!validate()) return;
 
-    // Convert local datetime to ISO
-    const startsAtISO = new Date(formData.starts_at).toISOString();
-    const endsAtISO = new Date(formData.ends_at).toISOString();
-
+    // Convert local datetime to ISO with Guatemala offset
     await onSubmit({
       ...formData,
-      starts_at: startsAtISO,
-      ends_at: endsAtISO,
+      starts_at: localInputToGTISO(formData.starts_at),
+      ends_at: localInputToGTISO(formData.ends_at),
     });
   };
 

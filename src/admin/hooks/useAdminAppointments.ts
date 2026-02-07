@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
+import { gtDayBoundaries } from '../../lib/datetime';
 
 export type AppointmentStatus =
   | 'scheduled'
@@ -77,11 +78,10 @@ export function useAdminAppointments(dateFilter?: string): UseAdminAppointmentsR
       `)
       .order('starts_at', { ascending: true });
 
-    // Filter by date if provided
+    // Filter by date if provided (Guatemala timezone boundaries)
     if (dateFilter) {
-      const startOfDay = `${dateFilter}T00:00:00`;
-      const endOfDay = `${dateFilter}T23:59:59`;
-      query = query.gte('starts_at', startOfDay).lte('starts_at', endOfDay);
+      const { start, end } = gtDayBoundaries(dateFilter);
+      query = query.gte('starts_at', start).lt('starts_at', end);
     }
 
     const { data, error: fetchError } = await query;

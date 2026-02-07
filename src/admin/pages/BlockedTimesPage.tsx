@@ -7,6 +7,7 @@ import {
 } from '../hooks/useAdminBlockedTimes';
 import { useAdminStaff } from '../hooks/useAdminStaff';
 import BlockedTimeForm from '../components/BlockedTimeForm';
+import { formatGTDateTime } from '../../lib/datetime';
 
 export default function BlockedTimesPage() {
   const { blockedTimes, loading, error, createBlockedTime, updateBlockedTime, deleteBlockedTime } =
@@ -63,18 +64,6 @@ export default function BlockedTimesPage() {
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Error al eliminar');
     }
-  };
-
-  const formatDateTime = (isoString: string) => {
-    const date = new Date(isoString);
-    return date.toLocaleString('es-GT', {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   };
 
   const formatDuration = (starts: string, ends: string) => {
@@ -293,9 +282,9 @@ function BlockedTimeCard({
           {/* Time range */}
           <div className="flex items-center gap-2 text-sm text-text-secondary">
             <HiOutlineClock className="w-4 h-4 text-text-muted" />
-            <span>{formatDateTime(blockedTime.starts_at)}</span>
+            <span>{formatGTDateTime(blockedTime.starts_at)}</span>
             <span className="text-text-muted">→</span>
-            <span>{formatDateTime(blockedTime.ends_at)}</span>
+            <span>{formatGTDateTime(blockedTime.ends_at)}</span>
           </div>
 
           {/* Reason */}

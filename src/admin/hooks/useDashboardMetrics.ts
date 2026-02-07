@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
+import { formatGTDate, gtDayBoundaries, gtWeekBoundaries, gtMonthBoundaries } from '../../lib/datetime';
 
 export interface DailyMetrics {
   totalAppointments: number;
@@ -77,36 +78,14 @@ interface UseDashboardMetricsResult {
 }
 
 function getDateRange(period: 'today' | 'week' | 'month'): { start: string; end: string } {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
   if (period === 'today') {
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return {
-      start: today.toISOString(),
-      end: tomorrow.toISOString(),
-    };
+    const todayStr = formatGTDate(new Date());
+    return gtDayBoundaries(todayStr);
   }
-
   if (period === 'week') {
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay());
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 7);
-    return {
-      start: startOfWeek.toISOString(),
-      end: endOfWeek.toISOString(),
-    };
+    return gtWeekBoundaries();
   }
-
-  // month
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-  return {
-    start: startOfMonth.toISOString(),
-    end: endOfMonth.toISOString(),
-  };
+  return gtMonthBoundaries();
 }
 
 export function useDashboardMetrics(): UseDashboardMetricsResult {

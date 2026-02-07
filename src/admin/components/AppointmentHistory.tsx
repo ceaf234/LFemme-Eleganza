@@ -1,5 +1,6 @@
 import { HiOutlineClock, HiArrowRight } from 'react-icons/hi';
 import { useAppointmentHistory, STATUS_LABELS } from '../hooks/useAppointmentHistory';
+import { formatGTShortDateTime } from '../../lib/datetime';
 
 interface AppointmentHistoryProps {
   appointmentId: number;
@@ -32,16 +33,6 @@ export default function AppointmentHistory({ appointmentId }: AppointmentHistory
     );
   }
 
-  const formatDateTime = (isoString: string) => {
-    const date = new Date(isoString);
-    return date.toLocaleString('es-GT', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
   return (
     <div className="space-y-2 py-2">
       {history.map((entry) => (
@@ -69,7 +60,7 @@ export default function AppointmentHistory({ appointmentId }: AppointmentHistory
               )}
             </div>
             <div className="flex items-center gap-2 text-text-muted mt-0.5">
-              <span>{formatDateTime(entry.changed_at)}</span>
+              <span>{formatGTShortDateTime(entry.changed_at)}</span>
               {entry.staff && (
                 <span>
                   por {entry.staff.first_name} {entry.staff.last_name}

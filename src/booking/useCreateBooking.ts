@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { buildGuatemalaISO, buildGuatemalaEndISO } from '../lib/datetime';
 import type { BookingState } from './types';
 
 export interface CreateBookingResult {
@@ -27,55 +28,42 @@ export function useCreateBooking(): UseCreateBookingResult {
       const firstName = nameParts[0] || '';
       const lastName = nameParts.slice(1).join(' ') || '';
 
-      // 2. Upsert client by email (or create new if no email)
+      // 2. Upsert client by phone (primary identifier)
       let clientId: number;
+      const normalizedPhone = state.customer.phone.replace(/\D/g, '');
 
-      if (state.customer.email) {
-        // Try to find existing client by email
-        const { data: existingClient } = await supabase
-          .from('clients')
-          .select('id')
-          .eq('email', state.customer.email)
-          .single();
+      const { data: existingClient } = await supabase
+        .from('clients')
+        .select('id')
+        .eq('phone', normalizedPhone)
+        .single();
 
-        if (existingClient) {
-          clientId = existingClient.id;
-          // Update client info
-          await supabase
-            .from('clients')
-            .update({
-              first_name: firstName,
-              last_name: lastName,
-              phone: state.customer.phone || null,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('id', clientId);
-        } else {
-          // Create new client
-          const { data: newClient, error: clientError } = await supabase
-            .from('clients')
-            .insert({
-              first_name: firstName,
-              last_name: lastName,
-              email: state.customer.email || null,
-              phone: state.customer.phone || null,
-              notes: state.customer.notes || null,
-            })
-            .select('id')
-            .single();
+      if (existingClient) {
+        clientId = existingClient.id;
 
-          if (clientError) throw new Error(`Error creating client: ${clientError.message}`);
-          clientId = newClient.id;
+        // Update client info — only overwrite email if a new one is provided
+        const updatePayload: Record<string, unknown> = {
+          first_name: firstName,
+          last_name: lastName,
+          updated_at: new Date().toISOString(),
+        };
+        if (state.customer.email?.trim()) {
+          updatePayload.email = state.customer.email.trim();
         }
+
+        await supabase
+          .from('clients')
+          .update(updatePayload)
+          .eq('id', clientId);
       } else {
-        // No email - create new client
+        // Create new client
         const { data: newClient, error: clientError } = await supabase
           .from('clients')
           .insert({
             first_name: firstName,
             last_name: lastName,
-            email: null,
-            phone: state.customer.phone || null,
+            email: state.customer.email?.trim() || null,
+            phone: normalizedPhone,
             notes: state.customer.notes || null,
           })
           .select('id')
@@ -85,13 +73,10 @@ export function useCreateBooking(): UseCreateBookingResult {
         clientId = newClient.id;
       }
 
-      // 3. Calculate starts_at and ends_at timestamps
-      // state.selectedDate is "YYYY-MM-DD", state.selectedTimeSlot is "HH:mm"
+      // 3. Calculate starts_at and ends_at with Guatemala timezone offset
       const totalDuration = state.selectedServices.reduce((sum, s) => sum + s.duration, 0);
-
-      // Create timezone-aware timestamp (assuming Guatemala timezone)
-      const startsAt = new Date(`${state.selectedDate}T${state.selectedTimeSlot}:00`);
-      const endsAt = new Date(startsAt.getTime() + totalDuration * 60 * 1000);
+      const startsAtISO = buildGuatemalaISO(state.selectedDate!, state.selectedTimeSlot!);
+      const endsAtISO = buildGuatemalaEndISO(state.selectedDate!, state.selectedTimeSlot!, totalDuration);
 
       // 4. Create appointment
       const { data: appointment, error: appointmentError } = await supabase
@@ -99,8 +84,8 @@ export function useCreateBooking(): UseCreateBookingResult {
         .insert({
           client_id: clientId,
           staff_id: state.selectedStaffId,
-          starts_at: startsAt.toISOString(),
-          ends_at: endsAt.toISOString(),
+          starts_at: startsAtISO,
+          ends_at: endsAtISO,
           status: 'scheduled',
           notes: state.customer.notes || null,
         })

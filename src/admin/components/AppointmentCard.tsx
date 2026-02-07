@@ -13,6 +13,7 @@ import {
   STATUS_CONFIG,
 } from '../hooks/useAdminAppointments';
 import AppointmentHistory from './AppointmentHistory';
+import { formatGTTime } from '../../lib/datetime';
 
 interface AppointmentCardProps {
   appointment: AdminAppointment;
@@ -41,11 +42,6 @@ export default function AppointmentCard({
   const [isChangingStatus, setIsChangingStatus] = useState(false);
 
   const statusConfig = STATUS_CONFIG[appointment.status];
-
-  const formatTime = (isoString: string) => {
-    const date = new Date(isoString);
-    return date.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit' });
-  };
 
   const totalPrice = appointment.appointment_services.reduce(
     (sum, s) => sum + Number(s.price),
@@ -83,7 +79,7 @@ export default function AppointmentCard({
         <div className="flex items-center gap-2">
           <HiOutlineClock className="w-5 h-5 text-accent" />
           <span className="font-sans font-medium text-text-primary">
-            {formatTime(appointment.starts_at)} - {formatTime(appointment.ends_at)}
+            {formatGTTime(appointment.starts_at)} - {formatGTTime(appointment.ends_at)}
           </span>
         </div>
 

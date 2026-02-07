@@ -12,6 +12,16 @@ interface FormErrors {
   phone?: string;
 }
 
+function normalizePhone(raw: string): string {
+  return raw.replace(/\D/g, '');
+}
+
+function formatPhoneDisplay(raw: string): string {
+  const digits = normalizePhone(raw);
+  if (digits.length <= 4) return digits;
+  return `${digits.slice(0, 4)}-${digits.slice(4, 8)}`;
+}
+
 export default function BookingForm({ onSubmit, isSubmitting = false }: BookingFormProps) {
   const { state, dispatch } = useBooking();
   const { confirm } = bookingContent;
@@ -25,6 +35,15 @@ export default function BookingForm({ onSubmit, isSubmitting = false }: BookingF
     }
   };
 
+  const handlePhoneChange = (rawValue: string) => {
+    // Strip to digits only, max 8
+    const digits = normalizePhone(rawValue).slice(0, 8);
+    dispatch({ type: 'UPDATE_CUSTOMER', payload: { phone: digits } });
+    if (errors.phone) {
+      setErrors((prev) => ({ ...prev, phone: undefined }));
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -32,8 +51,12 @@ export default function BookingForm({ onSubmit, isSubmitting = false }: BookingF
     if (!state.customer.name.trim()) {
       newErrors.name = confirm.requiredMessage;
     }
-    if (!state.customer.phone.trim()) {
+
+    const phoneDigits = normalizePhone(state.customer.phone);
+    if (!phoneDigits) {
       newErrors.phone = confirm.requiredMessage;
+    } else if (phoneDigits.length !== 8) {
+      newErrors.phone = 'El telefono debe tener 8 digitos.';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -74,9 +97,10 @@ export default function BookingForm({ onSubmit, isSubmitting = false }: BookingF
         <input
           id="customer-phone"
           type="tel"
-          value={state.customer.phone}
-          onChange={(e) => handleChange('phone', e.target.value)}
+          value={formatPhoneDisplay(state.customer.phone)}
+          onChange={(e) => handlePhoneChange(e.target.value)}
           placeholder={confirm.fields.phone.placeholder}
+          maxLength={9}
           className={`w-full bg-primary-dark border rounded-md px-4 py-3 text-sm text-text-primary font-sans placeholder:text-text-muted focus:outline-none focus:border-accent transition-colors ${
             errors.phone ? 'border-red-500' : 'border-border'
           }`}
