@@ -77,8 +77,27 @@ export const bookingContent = {
     optionDepositLabel: 'Deposito del 50%',
     optionDepositDescription: 'Paga la mitad ahora, el resto en tu cita',
     selectedLabel: 'Monto a pagar',
-    stripeComingSoon: 'Pago en linea proximamente',
-    stripeComingSoonDescription: 'Estamos trabajando para habilitar pagos en linea. Por ahora, confirma tu cita y paga al llegar.',
+    // Payment type selection
+    paymentTypeLabel: 'Selecciona como deseas pagar',
+    cardLabel: 'Tarjeta de credito / debito',
+    cardDescription: 'Pago en linea seguro',
+    transferLabel: 'Transferencia bancaria',
+    transferDescription: 'Deposito o transferencia a cuenta',
+    // Credit card placeholder
+    cardComingSoon: 'Pago con tarjeta proximamente',
+    cardComingSoonDescription: 'Estamos trabajando para habilitar pagos con tarjeta. Por ahora, selecciona transferencia bancaria o confirma tu cita y paga al llegar.',
+    // Bank transfer
+    bankInfoTitle: 'Datos bancarios para transferencia',
+    bankInfoNotConfigured: 'Datos bancarios no disponibles. Contactanos por WhatsApp para coordinar tu pago.',
+    // Voucher upload
+    voucherLabel: 'Comprobante de pago (opcional)',
+    voucherDescription: 'Sube una foto o captura de tu comprobante',
+    voucherSelectButton: 'Seleccionar imagen',
+    voucherChangeButton: 'Cambiar',
+    voucherMaxSize: 'Max 5MB — JPG, PNG o WebP',
+    voucherTooLarge: 'El archivo excede el limite de 5MB',
+    voucherInvalidType: 'Formato no soportado. Usa JPG, PNG o WebP',
+    // Actions
     confirmWithoutPayment: 'CONFIRMAR CITA',
     backLabel: 'REGRESAR',
   },

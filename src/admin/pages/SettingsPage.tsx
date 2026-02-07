@@ -8,6 +8,7 @@ import {
   HiOutlineCheck,
   HiOutlinePlus,
   HiOutlineTrash,
+  HiOutlineLibrary,
 } from 'react-icons/hi';
 import { useSiteSettings, type SiteSettings } from '../../hooks/useSiteSettings';
 
@@ -175,6 +176,14 @@ export default function SettingsPage() {
   const [copyright, setCopyright] = useState('');
   const footerSave = useSectionSave(updateSetting, 'footer');
 
+  // ── Bank state
+  const [bankName, setBankName] = useState('');
+  const [accountType, setAccountType] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [accountHolder, setAccountHolder] = useState('');
+  const [bankNotes, setBankNotes] = useState('');
+  const bankSave = useSectionSave(updateSetting, 'bank');
+
   // ── Populate from settings
   useEffect(() => {
     if (!settings) return;
@@ -200,6 +209,14 @@ export default function SettingsPage() {
     setTiktok(settings.social.tiktok);
 
     setCopyright(settings.footer.copyright);
+
+    if (settings.bank) {
+      setBankName(settings.bank.bank_name);
+      setAccountType(settings.bank.account_type);
+      setAccountNumber(settings.bank.account_number);
+      setAccountHolder(settings.bank.account_holder);
+      setBankNotes(settings.bank.notes);
+    }
   }, [settings]);
 
   // ── Paragraph helpers
@@ -389,6 +406,34 @@ export default function SettingsPage() {
             <Field label="Instagram URL" value={instagram} onChange={setInstagram} placeholder="https://instagram.com/..." />
             <Field label="Facebook URL" value={facebook} onChange={setFacebook} placeholder="https://facebook.com/..." />
             <Field label="TikTok URL" value={tiktok} onChange={setTiktok} placeholder="https://tiktok.com/@..." />
+          </div>
+        </SettingsSection>
+
+        {/* ─── Bank ──────────────────────────────────────── */}
+        <SettingsSection
+          icon={HiOutlineLibrary}
+          title="Datos Bancarios"
+          onSave={() =>
+            bankSave.save({
+              bank_name: bankName,
+              account_type: accountType,
+              account_number: accountNumber,
+              account_holder: accountHolder,
+              notes: bankNotes,
+            })
+          }
+          saving={bankSave.saving}
+          saved={bankSave.saved}
+          error={bankSave.error}
+        >
+          <div className="space-y-4">
+            <Field label="Nombre del banco" value={bankName} onChange={setBankName} placeholder="Banrural, BI, BAM..." />
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="Tipo de cuenta" value={accountType} onChange={setAccountType} placeholder="Monetaria, Ahorro..." />
+              <Field label="Numero de cuenta" value={accountNumber} onChange={setAccountNumber} placeholder="XXXX-XXXX-XX" />
+            </div>
+            <Field label="Titular de la cuenta" value={accountHolder} onChange={setAccountHolder} placeholder="Nombre completo del titular" />
+            <Field label="Notas adicionales" value={bankNotes} onChange={setBankNotes} multiline rows={2} placeholder="Ej: Enviar comprobante por WhatsApp" />
           </div>
         </SettingsSection>
 

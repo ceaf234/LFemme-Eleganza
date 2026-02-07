@@ -101,6 +101,37 @@ export function useCreateBooking(): UseCreateBookingResult {
 
       if (servicesError) throw new Error(`Error creating appointment services: ${servicesError.message}`);
 
+      // 6. Upload voucher (non-fatal — appointment already exists)
+      if (state.voucherFile && state.paymentType === 'transfer') {
+        try {
+          const ext = state.voucherFile.name.split('.').pop() || 'jpg';
+          const storagePath = `appointment_${appointment.id}/voucher.${ext}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from('vouchers')
+            .upload(storagePath, state.voucherFile, {
+              cacheControl: '3600',
+              upsert: false,
+            });
+
+          if (uploadError) {
+            console.warn('Voucher upload failed:', uploadError.message);
+          } else {
+            // Link voucher path to appointment
+            const { error: updateError } = await supabase
+              .from('appointments')
+              .update({ voucher_path: storagePath })
+              .eq('id', appointment.id);
+
+            if (updateError) {
+              console.warn('Failed to link voucher to appointment:', updateError.message);
+            }
+          }
+        } catch (voucherErr) {
+          console.warn('Voucher upload error:', voucherErr);
+        }
+      }
+
       setLoading(false);
       return { appointmentId: appointment.id, clientId };
     } catch (err) {

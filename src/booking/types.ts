@@ -35,6 +35,8 @@ export interface BookingState {
   customer: CustomerDraft;
   customerInfoCompleted: boolean;
   paymentMethod: 'full' | 'deposit' | null;
+  paymentType: 'card' | 'transfer' | null;
+  voucherFile: File | null;
   isConfirmed: boolean;
   confirmedAppointmentId: number | null;
 }
@@ -48,5 +50,7 @@ export type BookingAction =
   | { type: 'UPDATE_CUSTOMER'; payload: Partial<CustomerDraft> }
   | { type: 'COMPLETE_CUSTOMER_INFO' }
   | { type: 'SET_PAYMENT_METHOD'; payload: 'full' | 'deposit' }
+  | { type: 'SET_PAYMENT_TYPE'; payload: 'card' | 'transfer' }
+  | { type: 'SET_VOUCHER_FILE'; payload: File | null }
   | { type: 'CONFIRM'; payload: number } // appointment ID
   | { type: 'RESET' };

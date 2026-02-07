@@ -40,12 +40,21 @@ export interface SiteSettingsFooter {
   copyright: string;
 }
 
+export interface SiteSettingsBank {
+  bank_name: string;
+  account_type: string;
+  account_number: string;
+  account_holder: string;
+  notes: string;
+}
+
 export interface SiteSettings {
   brand: SiteSettingsBrand;
   about: SiteSettingsAbout;
   contact: SiteSettingsContact;
   social: SiteSettingsSocial;
   footer: SiteSettingsFooter;
+  bank: SiteSettingsBank;
 }
 
 interface UseSiteSettingsResult {
@@ -86,6 +95,7 @@ export function useSiteSettings(): UseSiteSettingsResult {
         contact: (mapped.contact as SiteSettingsContact) ?? null,
         social: (mapped.social as SiteSettingsSocial) ?? null,
         footer: (mapped.footer as SiteSettingsFooter) ?? null,
+        bank: (mapped.bank as SiteSettingsBank) ?? null,
       } as SiteSettings);
     }
 
