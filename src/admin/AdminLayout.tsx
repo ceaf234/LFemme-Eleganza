@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   HiOutlineHome,
   HiOutlineCalendar,
@@ -6,7 +6,9 @@ import {
   HiOutlineSparkles,
   HiOutlineUserGroup,
   HiOutlineClock,
+  HiOutlineLogout,
 } from 'react-icons/hi';
+import { useAuth } from '../auth/AuthContext';
 
 const NAV_ITEMS = [
   { path: '/admin', label: 'Dashboard', icon: HiOutlineHome, exact: true },
@@ -19,6 +21,13 @@ const NAV_ITEMS = [
 
 export default function AdminLayout() {
   const { pathname } = useLocation();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/admin/login', { replace: true });
+  };
 
   const isActive = (path: string, exact?: boolean) => {
     if (exact) return pathname === path;
@@ -62,13 +71,38 @@ export default function AdminLayout() {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-border">
-          <Link
-            to="/"
-            className="text-xs text-text-muted hover:text-accent transition-colors font-sans"
-          >
-            &larr; Volver al sitio
-          </Link>
+        <div className="p-4 border-t border-border space-y-3">
+          {/* User info */}
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-accent/20 text-accent flex items-center justify-center text-xs font-sans font-medium shrink-0">
+              {user?.email?.charAt(0).toUpperCase() ?? 'A'}
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs text-text-primary font-sans truncate">
+                {user?.email ?? ''}
+              </p>
+              <p className="text-[10px] text-text-muted font-sans">
+                Administrador
+              </p>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center justify-between">
+            <Link
+              to="/"
+              className="text-xs text-text-muted hover:text-accent transition-colors font-sans"
+            >
+              &larr; Volver al sitio
+            </Link>
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-1 text-xs text-text-muted hover:text-red-400 transition-colors font-sans"
+            >
+              <HiOutlineLogout className="w-3.5 h-3.5" />
+              Cerrar sesion
+            </button>
+          </div>
         </div>
       </aside>
 
