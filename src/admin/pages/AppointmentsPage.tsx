@@ -4,13 +4,27 @@ import {
   useAdminAppointments,
   STATUS_CONFIG,
   type AppointmentStatus,
+  type AdminAppointment,
 } from '../hooks/useAdminAppointments';
 import { useAdminStaff } from '../hooks/useAdminStaff';
 import { useAdminServices } from '../hooks/useAdminServices';
 import { useCreateAdminAppointment, type AdminAppointmentFormData } from '../hooks/useCreateAdminAppointment';
 import AppointmentCard from '../components/AppointmentCard';
 import AdminAppointmentForm from '../components/AdminAppointmentForm';
-import { formatGTDate } from '../../lib/datetime';
+import ViewToggle, { type ViewType } from '../components/ViewToggle';
+import TimelineView from '../components/TimelineView';
+import AppointmentSlidePanel from '../components/AppointmentSlidePanel';
+import { formatGTDate, addDays, getWeekStart, getDateRange } from '../../lib/datetime';
+
+// ─── View configuration ─────────────────────────────────────
+
+const VIEW_CONFIG: Record<ViewType, { days: number }> = {
+  day: { days: 1 },
+  '3day': { days: 3 },
+  week: { days: 7 },
+};
+
+// ─── Helpers ─────────────────────────────────────────────────
 
 function formatDate(date: Date): string {
   return formatGTDate(date);
@@ -27,15 +41,48 @@ function formatDisplayDate(dateStr: string): string {
   });
 }
 
+function formatDisplayDateRange(startDate: string, days: number): string {
+  const endDateStr = addDays(startDate, days - 1);
+  const startD = new Date(startDate + 'T12:00:00-06:00');
+  const endD = new Date(endDateStr + 'T12:00:00-06:00');
+
+  const startFormatted = startD.toLocaleDateString('es-GT', {
+    timeZone: 'America/Guatemala',
+    day: 'numeric',
+    month: 'short',
+  });
+  const endFormatted = endD.toLocaleDateString('es-GT', {
+    timeZone: 'America/Guatemala',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+
+  return `${startFormatted} – ${endFormatted}`;
+}
+
+// ─── Component ───────────────────────────────────────────────
+
 export default function AppointmentsPage() {
   const [selectedDate, setSelectedDate] = useState(() => formatDate(new Date()));
+  const [viewType, setViewType] = useState<ViewType>('day');
   const [statusFilter, setStatusFilter] = useState<AppointmentStatus | 'all'>('all');
   const [showForm, setShowForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<AdminAppointment | null>(null);
+
+  // Compute effective date range based on view
+  const effectiveStartDate =
+    viewType === 'week' ? getWeekStart(selectedDate) : selectedDate;
+
+  const dateRangeEnd =
+    viewType === 'day'
+      ? undefined
+      : addDays(effectiveStartDate, VIEW_CONFIG[viewType].days);
 
   const { appointments, loading, error, updateStatus, updateNotes, refetch } =
-    useAdminAppointments(selectedDate);
+    useAdminAppointments(effectiveStartDate, dateRangeEnd);
   const { staff, loading: loadingStaff } = useAdminStaff();
   const { services, loading: loadingServices } = useAdminServices();
   const { createAppointment } = useCreateAdminAppointment();
@@ -45,9 +92,11 @@ export default function AppointmentsPage() {
       ? appointments
       : appointments.filter((a) => a.status === statusFilter);
 
-  const goToDate = (offset: number) => {
+  const navStep = VIEW_CONFIG[viewType].days;
+
+  const goToDate = (direction: number) => {
     const current = new Date(selectedDate + 'T12:00:00');
-    current.setDate(current.getDate() + offset);
+    current.setDate(current.getDate() + direction * navStep);
     setSelectedDate(formatDate(current));
   };
 
@@ -63,7 +112,7 @@ export default function AppointmentsPage() {
       acc[a.status] = (acc[a.status] || 0) + 1;
       return acc;
     },
-    {} as Record<string, number>
+    {} as Record<string, number>,
   );
 
   const handleCreate = () => {
@@ -92,6 +141,18 @@ export default function AppointmentsPage() {
       setIsSubmitting(false);
     }
   };
+
+  // Date display text
+  const dateDisplayText =
+    viewType === 'day'
+      ? formatDisplayDate(selectedDate)
+      : formatDisplayDateRange(effectiveStartDate, VIEW_CONFIG[viewType].days);
+
+  // Dates array for timeline views
+  const timelineDates =
+    viewType !== 'day'
+      ? getDateRange(effectiveStartDate, VIEW_CONFIG[viewType].days)
+      : [];
 
   return (
     <div className="p-8">
@@ -127,7 +188,7 @@ export default function AppointmentsPage() {
         </div>
       )}
 
-      {/* Date navigation */}
+      {/* Date navigation + View toggle */}
       <div className="flex items-center gap-4 mb-6">
         <button
           onClick={() => goToDate(-1)}
@@ -138,7 +199,7 @@ export default function AppointmentsPage() {
 
         <div className="flex-1 text-center">
           <h2 className="font-serif text-xl text-text-primary capitalize">
-            {formatDisplayDate(selectedDate)}
+            {dateDisplayText}
           </h2>
         </div>
 
@@ -157,6 +218,10 @@ export default function AppointmentsPage() {
             Hoy
           </button>
         )}
+
+        <div className="border-l border-border pl-4">
+          <ViewToggle currentView={viewType} onViewChange={setViewType} />
+        </div>
       </div>
 
       {/* Status filter pills */}
@@ -195,25 +260,56 @@ export default function AppointmentsPage() {
         <p className="text-text-secondary animate-pulse">Cargando citas...</p>
       ) : error ? (
         <p className="text-red-400">Error: {error}</p>
-      ) : filteredAppointments.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-text-muted">
-            {statusFilter === 'all'
-              ? 'No hay citas para este dia.'
-              : `No hay citas con estado "${STATUS_CONFIG[statusFilter].label}" para este dia.`}
-          </p>
-        </div>
+      ) : viewType === 'day' ? (
+        /* Day view — existing card grid */
+        filteredAppointments.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-text-muted">
+              {statusFilter === 'all'
+                ? 'No hay citas para este dia.'
+                : `No hay citas con estado "${STATUS_CONFIG[statusFilter].label}" para este dia.`}
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {filteredAppointments.map((appointment) => (
+              <AppointmentCard
+                key={appointment.id}
+                appointment={appointment}
+                onStatusChange={updateStatus}
+                onNotesChange={updateNotes}
+              />
+            ))}
+          </div>
+        )
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredAppointments.map((appointment) => (
-            <AppointmentCard
-              key={appointment.id}
-              appointment={appointment}
-              onStatusChange={updateStatus}
-              onNotesChange={updateNotes}
-            />
-          ))}
-        </div>
+        /* Timeline view — 3-day or week */
+        <TimelineView
+          dates={timelineDates}
+          appointments={appointments}
+          statusFilter={statusFilter}
+          onAppointmentClick={setSelectedAppointment}
+        />
+      )}
+
+      {/* Slide panel for timeline appointment details */}
+      {selectedAppointment && (
+        <AppointmentSlidePanel
+          appointment={selectedAppointment}
+          onClose={() => setSelectedAppointment(null)}
+          onStatusChange={async (id, status) => {
+            await updateStatus(id, status);
+            setSelectedAppointment((prev) =>
+              prev ? { ...prev, status } : null,
+            );
+          }}
+          onNotesChange={async (id, notes) => {
+            await updateNotes(id, notes);
+            setSelectedAppointment((prev) =>
+              prev ? { ...prev, notes } : null,
+            );
+          }}
+        />
       )}
     </div>
   );

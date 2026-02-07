@@ -178,6 +178,93 @@ export function isoToDatetimeLocal(isoString: string): string {
   return `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')}`;
 }
 
+// ─── Multi-day range helpers ─────────────────────────────────
+
+/**
+ * Add N days to a YYYY-MM-DD string, returning a YYYY-MM-DD string.
+ */
+export function addDays(dateStr: string, days: number): string {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const date = new Date(y, m - 1, d + days);
+  return formatLocalDate(date);
+}
+
+/**
+ * Get an array of YYYY-MM-DD strings for `count` consecutive days.
+ */
+export function getDateRange(startDateStr: string, count: number): string[] {
+  const dates: string[] = [];
+  for (let i = 0; i < count; i++) {
+    dates.push(addDays(startDateStr, i));
+  }
+  return dates;
+}
+
+/**
+ * Start/end boundaries for a multi-day range in Guatemala timezone.
+ * `start` = midnight of `dateStr`, `end` = midnight of `dateStr + days`.
+ */
+export function gtRangeBoundaries(
+  dateStr: string,
+  days: number,
+): { start: string; end: string } {
+  return {
+    start: `${dateStr}T00:00:00${GT_OFFSET}`,
+    end: `${addDays(dateStr, days)}T00:00:00${GT_OFFSET}`,
+  };
+}
+
+/**
+ * Extract hour as a decimal in Guatemala timezone from an ISO timestamp.
+ * e.g., "2026-02-06T14:30:00-06:00" → 14.5
+ */
+export function getGTHourDecimal(isoString: string): number {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: GT_TIMEZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).formatToParts(new Date(isoString));
+  const hour = Number(parts.find((p) => p.type === 'hour')?.value ?? 0);
+  const minute = Number(parts.find((p) => p.type === 'minute')?.value ?? 0);
+  return hour + minute / 60;
+}
+
+/**
+ * Extract the YYYY-MM-DD date portion in Guatemala timezone from an ISO timestamp.
+ */
+export function getGTDateStr(isoString: string): string {
+  return new Date(isoString).toLocaleDateString('en-CA', { timeZone: GT_TIMEZONE });
+}
+
+/**
+ * Given a YYYY-MM-DD, return the Sunday of that week (Sun-start).
+ */
+export function getWeekStart(dateStr: string): string {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  const dayOfWeek = date.getDay(); // 0=Sun
+  const weekStart = new Date(y, m - 1, d - dayOfWeek);
+  return formatLocalDate(weekStart);
+}
+
+/**
+ * Format a short day header for timeline columns.
+ * e.g., "lun 6" from "2026-02-06"
+ */
+export function formatShortDayHeader(dateStr: string): string {
+  const date = new Date(dateStr + 'T12:00:00-06:00');
+  const weekday = date.toLocaleDateString('es-GT', {
+    timeZone: GT_TIMEZONE,
+    weekday: 'short',
+  });
+  const day = date.toLocaleDateString('es-GT', {
+    timeZone: GT_TIMEZONE,
+    day: 'numeric',
+  });
+  return `${weekday} ${day}`;
+}
+
 // ─── Internal helpers ────────────────────────────────────────
 
 function formatLocalDate(date: Date): string {

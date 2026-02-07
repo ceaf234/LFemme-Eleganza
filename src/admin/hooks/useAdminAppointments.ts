@@ -52,7 +52,10 @@ interface UseAdminAppointmentsResult {
   updateNotes: (id: number, notes: string) => Promise<void>;
 }
 
-export function useAdminAppointments(dateFilter?: string): UseAdminAppointmentsResult {
+export function useAdminAppointments(
+  dateFilter?: string,
+  dateRangeEnd?: string,
+): UseAdminAppointmentsResult {
   const [appointments, setAppointments] = useState<AdminAppointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -76,8 +79,12 @@ export function useAdminAppointments(dateFilter?: string): UseAdminAppointmentsR
       `)
       .order('starts_at', { ascending: true });
 
-    // Filter by date if provided (Guatemala timezone boundaries)
-    if (dateFilter) {
+    // Filter by date range (multi-day) or single day
+    if (dateFilter && dateRangeEnd) {
+      query = query
+        .gte('starts_at', `${dateFilter}T00:00:00-06:00`)
+        .lt('starts_at', `${dateRangeEnd}T00:00:00-06:00`);
+    } else if (dateFilter) {
       const { start, end } = gtDayBoundaries(dateFilter);
       query = query.gte('starts_at', start).lt('starts_at', end);
     }
@@ -92,7 +99,7 @@ export function useAdminAppointments(dateFilter?: string): UseAdminAppointmentsR
     }
 
     setLoading(false);
-  }, [dateFilter]);
+  }, [dateFilter, dateRangeEnd]);
 
   useEffect(() => {
     fetchAppointments();
