@@ -22,6 +22,21 @@ export default function Footer() {
             <span className="w-8 h-px bg-accent/50" />
           </div>
         </div>
+
+        {/* Powered by */}
+        <div className="text-center mt-4">
+          <p className="text-text-muted text-xs">
+            Powered by{' '}
+            <a
+              href="https://gravitylabs.tech"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-text-muted hover:text-accent transition-colors"
+            >
+              GravityLabs
+            </a>
+          </p>
+        </div>
       </div>
     </footer>
   );
