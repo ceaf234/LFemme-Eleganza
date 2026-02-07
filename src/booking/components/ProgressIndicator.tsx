@@ -5,6 +5,7 @@ import { bookingContent } from '../../content/bookingContent';
 const { steps } = bookingContent.layout;
 
 function getStepIndex(pathname: string): number {
+  if (pathname === '/book/payment') return 3;
   if (pathname === '/book/confirm') return 2;
   if (pathname === '/book/schedule') return 1;
   return 0;

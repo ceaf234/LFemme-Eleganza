@@ -14,6 +14,8 @@ export function createInitialState(): BookingState {
     selectedDate: null,
     selectedTimeSlot: null,
     customer: { ...INITIAL_CUSTOMER },
+    customerInfoCompleted: false,
+    paymentMethod: null,
     isConfirmed: false,
     confirmedAppointmentId: null,
   };
@@ -46,6 +48,8 @@ export function bookingReducer(state: BookingState, action: BookingAction): Book
         selectedStaffId: action.payload,
         selectedDate: null,
         selectedTimeSlot: null,
+        customerInfoCompleted: false,
+        paymentMethod: null,
       };
 
     case 'SET_DATE':
@@ -65,6 +69,18 @@ export function bookingReducer(state: BookingState, action: BookingAction): Book
       return {
         ...state,
         customer: { ...state.customer, ...action.payload },
+      };
+
+    case 'COMPLETE_CUSTOMER_INFO':
+      return {
+        ...state,
+        customerInfoCompleted: true,
+      };
+
+    case 'SET_PAYMENT_METHOD':
+      return {
+        ...state,
+        paymentMethod: action.payload,
       };
 
     case 'CONFIRM':

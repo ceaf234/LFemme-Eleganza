@@ -34,6 +34,8 @@ export interface BookingState {
   selectedDate: string | null; // "YYYY-MM-DD"
   selectedTimeSlot: string | null; // "HH:mm"
   customer: CustomerDraft;
+  customerInfoCompleted: boolean;
+  paymentMethod: 'full' | 'deposit' | null;
   isConfirmed: boolean;
   confirmedAppointmentId: number | null;
 }
@@ -45,5 +47,7 @@ export type BookingAction =
   | { type: 'SET_DATE'; payload: string }
   | { type: 'SET_TIME_SLOT'; payload: string }
   | { type: 'UPDATE_CUSTOMER'; payload: Partial<CustomerDraft> }
+  | { type: 'COMPLETE_CUSTOMER_INFO' }
+  | { type: 'SET_PAYMENT_METHOD'; payload: 'full' | 'deposit' }
   | { type: 'CONFIRM'; payload: number } // appointment ID
   | { type: 'RESET' };

@@ -8,7 +8,8 @@ export const bookingContent = {
     steps: [
       { key: 'services', label: 'Servicios', path: '/book' },
       { key: 'schedule', label: 'Horario', path: '/book/schedule' },
-      { key: 'confirm', label: 'Confirmación', path: '/book/confirm' },
+      { key: 'confirm', label: 'Datos', path: '/book/confirm' },
+      { key: 'payment', label: 'Pago', path: '/book/payment' },
     ],
   },
 
@@ -66,7 +67,20 @@ export const bookingContent = {
     },
     requiredMessage: 'Este campo es obligatorio.',
     backLabel: 'REGRESAR',
-    submitLabel: 'CONFIRMAR CITA',
+    submitLabel: 'CONTINUAR',
+  },
+
+  payment: {
+    heading: 'Metodo de Pago',
+    optionFullLabel: 'Pago completo',
+    optionFullDescription: 'Paga el monto total de tu cita',
+    optionDepositLabel: 'Deposito del 50%',
+    optionDepositDescription: 'Paga la mitad ahora, el resto en tu cita',
+    selectedLabel: 'Monto a pagar',
+    stripeComingSoon: 'Pago en linea proximamente',
+    stripeComingSoonDescription: 'Estamos trabajando para habilitar pagos en linea. Por ahora, confirma tu cita y paga al llegar.',
+    confirmWithoutPayment: 'CONFIRMAR CITA',
+    backLabel: 'REGRESAR',
   },
 
   success: {

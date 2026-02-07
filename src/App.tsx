@@ -10,6 +10,7 @@ const BookingLayout = lazy(() => import('./booking/BookingLayout'));
 const ServicesPage = lazy(() => import('./booking/pages/ServicesPage'));
 const SchedulePage = lazy(() => import('./booking/pages/SchedulePage'));
 const ConfirmPage = lazy(() => import('./booking/pages/ConfirmPage'));
+const PaymentPage = lazy(() => import('./booking/pages/PaymentPage'));
 
 // Admin pages
 const AdminLayout = lazy(() => import('./admin/AdminLayout'));
@@ -51,6 +52,7 @@ function App() {
               <Route index element={<Suspense fallback={null}><ServicesPage /></Suspense>} />
               <Route path="schedule" element={<Suspense fallback={null}><SchedulePage /></Suspense>} />
               <Route path="confirm" element={<Suspense fallback={null}><ConfirmPage /></Suspense>} />
+              <Route path="payment" element={<Suspense fallback={null}><PaymentPage /></Suspense>} />
             </Route>
 
             {/* Admin login — not protected */}

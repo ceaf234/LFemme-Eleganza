@@ -9,6 +9,7 @@ interface BookingContextValue {
   totalDuration: number;
   canProceedToSchedule: boolean;
   canProceedToConfirm: boolean;
+  canProceedToPayment: boolean;
 }
 
 const BookingContext = createContext<BookingContextValue | null>(null);
@@ -27,6 +28,11 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
       totalDuration,
       canProceedToSchedule: state.selectedServices.length > 0,
       canProceedToConfirm: state.selectedStaffId !== null && state.selectedDate !== null && state.selectedTimeSlot !== null,
+      canProceedToPayment:
+        state.selectedStaffId !== null &&
+        state.selectedDate !== null &&
+        state.selectedTimeSlot !== null &&
+        state.customerInfoCompleted,
     };
   }, [state, dispatch]);
 
