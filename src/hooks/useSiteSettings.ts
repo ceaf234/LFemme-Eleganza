@@ -27,6 +27,7 @@ export interface SiteSettingsContact {
   address_line1: string;
   address_line2: string;
   business_hours: string;
+  directions_url: string;
 }
 
 export interface SiteSettingsSocial {

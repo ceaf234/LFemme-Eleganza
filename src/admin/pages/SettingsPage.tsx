@@ -163,6 +163,7 @@ export default function SettingsPage() {
   const [addressLine1, setAddressLine1] = useState('');
   const [addressLine2, setAddressLine2] = useState('');
   const [businessHours, setBusinessHours] = useState('');
+  const [directionsUrl, setDirectionsUrl] = useState('');
   const contactSave = useSectionSave(updateSetting, 'contact');
 
   // ── Social state
@@ -202,6 +203,7 @@ export default function SettingsPage() {
     setAddressLine1(settings.contact.address_line1);
     setAddressLine2(settings.contact.address_line2);
     setBusinessHours(settings.contact.business_hours);
+    setDirectionsUrl(settings.contact.directions_url ?? '');
 
     setSocialHandle(settings.social.handle);
     setInstagram(settings.social.instagram);
@@ -353,6 +355,7 @@ export default function SettingsPage() {
               address_line1: addressLine1,
               address_line2: addressLine2,
               business_hours: businessHours,
+              directions_url: directionsUrl,
             })
           }
           saving={contactSave.saving}
@@ -381,6 +384,12 @@ export default function SettingsPage() {
               multiline
               rows={3}
               placeholder="Lunes a Sabado: 9:00 - 19:00&#10;Domingo: Cerrado"
+            />
+            <Field
+              label="Enlace de direcciones (Google Maps / Waze)"
+              value={directionsUrl}
+              onChange={setDirectionsUrl}
+              placeholder="https://maps.google.com/..."
             />
           </div>
         </SettingsSection>

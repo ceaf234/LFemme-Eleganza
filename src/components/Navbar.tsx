@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { HiOutlineSparkles, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineMenu, HiOutlineX } from 'react-icons/hi';
+import { HiOutlineSparkles, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineMenu, HiOutlineX, HiOutlineUserGroup } from 'react-icons/hi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useSiteContent } from '../context/SiteSettingsContext';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   sparkles: HiOutlineSparkles,
   location: HiOutlineLocationMarker,
+  users: HiOutlineUserGroup,
   whatsapp: FaWhatsapp,
 };
 

@@ -10,6 +10,7 @@ export const siteContent = {
   nav: {
     links: [
       { label: "Nuestros Servicios", href: "#servicios", icon: "sparkles" },
+      { label: "Sobre Nosotros", href: "#social", icon: "users" },
       { label: "Dónde Ubicarnos", href: "#contacto", icon: "location" },
       { label: "Envíanos un WhatsApp", href: "https://wa.me/50223456789", icon: "whatsapp", isWhatsApp: true },
     ],
@@ -156,7 +157,12 @@ export function buildSiteContent(dbSettings: SiteSettings | null): SiteContent {
     nav: {
       links: [
         { label: 'Nuestros Servicios', href: '#servicios', icon: 'sparkles' },
-        { label: 'Donde Ubicarnos', href: '#contacto', icon: 'location' },
+        { label: 'Sobre Nosotros', href: '#social', icon: 'users' },
+        {
+          label: 'Donde Ubicarnos',
+          href: contact.directions_url || '#contacto',
+          icon: 'location',
+        },
         {
           label: 'Envianos un WhatsApp',
           href: `https://wa.me/${contact.whatsapp}`,
