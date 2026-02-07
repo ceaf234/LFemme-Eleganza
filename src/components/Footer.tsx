@@ -1,7 +1,7 @@
-import { siteContent } from '../content/siteContent';
+import { useSiteContent } from '../context/SiteSettingsContext';
 
 export default function Footer() {
-  const { brand, footer } = siteContent;
+  const { brand, footer } = useSiteContent();
 
   return (
     <footer className="py-8 bg-primary border-t border-border">

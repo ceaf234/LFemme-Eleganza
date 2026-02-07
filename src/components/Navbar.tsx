@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { HiOutlineSparkles, HiOutlineLocationMarker, HiOutlineCalendar, HiOutlineMenu, HiOutlineX } from 'react-icons/hi';
 import { FaWhatsapp } from 'react-icons/fa';
-import { siteContent } from '../content/siteContent';
+import { useSiteContent } from '../context/SiteSettingsContext';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   sparkles: HiOutlineSparkles,
@@ -63,7 +63,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
     setIsMobileMenuOpen(false);
   };
 
-  const { nav, brand } = siteContent;
+  const { nav, brand } = useSiteContent();
 
   return (
     <nav

@@ -1,6 +1,6 @@
 import { FaInstagram, FaFacebookF, FaWhatsapp, FaTiktok } from 'react-icons/fa';
 import SectionHeader from './SectionHeader';
-import { siteContent } from '../content/siteContent';
+import { useSiteContent } from '../context/SiteSettingsContext';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   instagram: FaInstagram,
@@ -10,7 +10,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 export default function Socials() {
-  const { socials } = siteContent;
+  const { socials } = useSiteContent();
 
   return (
     <section id="social" className="py-24 bg-primary">

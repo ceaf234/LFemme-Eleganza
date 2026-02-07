@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import { siteContent } from '../content/siteContent';
+import { useSiteContent } from '../context/SiteSettingsContext';
 
 export default function Hero() {
-  const { brand, hero } = siteContent;
+  const { brand, hero } = useSiteContent();
 
   return (
     <section

@@ -20,6 +20,7 @@ const AdminStaff = lazy(() => import('./admin/pages/StaffPage'));
 const AdminAppointments = lazy(() => import('./admin/pages/AppointmentsPage'));
 const AdminClients = lazy(() => import('./admin/pages/ClientsPage'));
 const AdminBlockedTimes = lazy(() => import('./admin/pages/BlockedTimesPage'));
+const AdminSettings = lazy(() => import('./admin/pages/SettingsPage'));
 
 // Auth
 const LoginPage = lazy(() => import('./auth/LoginPage'));
@@ -82,6 +83,7 @@ function App() {
               <Route path="staff" element={<Suspense fallback={null}><AdminStaff /></Suspense>} />
               <Route path="clients" element={<Suspense fallback={null}><AdminClients /></Suspense>} />
               <Route path="blocked-times" element={<Suspense fallback={null}><AdminBlockedTimes /></Suspense>} />
+              <Route path="settings" element={<Suspense fallback={null}><AdminSettings /></Suspense>} />
             </Route>
           </Routes>
         </BrowserRouter>

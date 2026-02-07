@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { HiOutlineLocationMarker, HiOutlinePhone, HiOutlineMail, HiOutlineClock } from 'react-icons/hi';
 import SectionHeader from './SectionHeader';
-import { siteContent } from '../content/siteContent';
+import { useSiteContent } from '../context/SiteSettingsContext';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   location: HiOutlineLocationMarker,
@@ -40,7 +40,7 @@ function ContactItem({ title, icon, lines }: ContactItemProps) {
 }
 
 export default function Contact() {
-  const { contact } = siteContent;
+  const { contact } = useSiteContent();
 
   return (
     <section id="contacto" className="py-24 bg-primary-dark">

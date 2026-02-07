@@ -1,4 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
+import { SiteSettingsProvider } from './context/SiteSettingsContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 
@@ -41,26 +42,28 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-primary">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-accent focus:text-primary focus:rounded-md focus:font-sans focus:text-sm focus:font-medium"
-      >
-        Ir al contenido principal
-      </a>
-      <Navbar activeSection={activeSection} />
-      <main id="main-content">
-        <Hero />
+    <SiteSettingsProvider>
+      <div className="min-h-screen bg-primary">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-accent focus:text-primary focus:rounded-md focus:font-sans focus:text-sm focus:font-medium"
+        >
+          Ir al contenido principal
+        </a>
+        <Navbar activeSection={activeSection} />
+        <main id="main-content">
+          <Hero />
+          <Suspense fallback={null}>
+            <About />
+            <Services />
+            <Socials />
+            <Contact />
+          </Suspense>
+        </main>
         <Suspense fallback={null}>
-          <About />
-          <Services />
-          <Socials />
-          <Contact />
+          <Footer />
         </Suspense>
-      </main>
-      <Suspense fallback={null}>
-        <Footer />
-      </Suspense>
-    </div>
+      </div>
+    </SiteSettingsProvider>
   );
 }

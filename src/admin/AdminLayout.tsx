@@ -6,6 +6,7 @@ import {
   HiOutlineSparkles,
   HiOutlineUserGroup,
   HiOutlineClock,
+  HiOutlineCog,
   HiOutlineLogout,
 } from 'react-icons/hi';
 import { useAuth } from '../auth/AuthContext';
@@ -17,6 +18,7 @@ const NAV_ITEMS = [
   { path: '/admin/staff', label: 'Personal', icon: HiOutlineUserGroup },
   { path: '/admin/clients', label: 'Clientes', icon: HiOutlineUsers },
   { path: '/admin/blocked-times', label: 'Tiempos Bloqueados', icon: HiOutlineClock },
+  { path: '/admin/settings', label: 'Configuracion', icon: HiOutlineCog },
 ];
 
 export default function AdminLayout() {

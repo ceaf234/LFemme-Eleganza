@@ -1,7 +1,7 @@
 import { HiOutlineSparkles, HiOutlineHand, HiOutlineUser, HiOutlineEye } from 'react-icons/hi';
 import { HiArrowRight } from 'react-icons/hi2';
 import SectionHeader from './SectionHeader';
-import { siteContent } from '../content/siteContent';
+import { useSiteContent } from '../context/SiteSettingsContext';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   facial: HiOutlineSparkles,
@@ -40,7 +40,7 @@ function ServiceCard({ title, description, icon, cta }: ServiceCardProps) {
 }
 
 export default function Services() {
-  const { services } = siteContent;
+  const { services } = useSiteContent();
 
   return (
     <section id="servicios" className="py-24 bg-primary-dark">

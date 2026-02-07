@@ -1,8 +1,8 @@
 import SectionHeader from './SectionHeader';
-import { siteContent } from '../content/siteContent';
+import { useSiteContent } from '../context/SiteSettingsContext';
 
 export default function About() {
-  const { about } = siteContent;
+  const { about } = useSiteContent();
 
   const highlightText = (text: string, highlight: string | null) => {
     if (!highlight) return text;

@@ -129,3 +129,107 @@ export const siteContent = {
 };
 
 export type SiteContent = typeof siteContent;
+
+// ─── Dynamic settings merger ─────────────────────────────────
+
+import type { SiteSettings } from '../hooks/useSiteSettings';
+
+/**
+ * Merge database settings over the hardcoded siteContent defaults.
+ * Returns the full SiteContent structure that components consume.
+ * Falls back to hardcoded values if dbSettings is null.
+ */
+export function buildSiteContent(dbSettings: SiteSettings | null): SiteContent {
+  if (!dbSettings) return siteContent;
+
+  const { brand, about, contact, social, footer } = dbSettings;
+
+  return {
+    brand: {
+      name: brand.name,
+      accent: brand.accent,
+      tagline: brand.tagline,
+      subtitle: brand.subtitle,
+      motto: brand.motto,
+    },
+
+    nav: {
+      links: [
+        { label: 'Nuestros Servicios', href: '#servicios', icon: 'sparkles' },
+        { label: 'Donde Ubicarnos', href: '#contacto', icon: 'location' },
+        {
+          label: 'Envianos un WhatsApp',
+          href: `https://wa.me/${contact.whatsapp}`,
+          icon: 'whatsapp',
+          isWhatsApp: true,
+        },
+      ],
+      cta: siteContent.nav.cta,
+    },
+
+    hero: {
+      headline: {
+        line1: brand.name,
+        line2: brand.accent,
+      },
+      subheadline: brand.motto,
+      cta: siteContent.hero.cta,
+    },
+
+    about: {
+      label: siteContent.about.label,
+      heading: siteContent.about.heading,
+      paragraphs: about.paragraphs,
+    },
+
+    services: siteContent.services, // services managed in admin/services, not settings
+
+    socials: {
+      label: siteContent.socials.label,
+      heading: siteContent.socials.heading,
+      handle: social.handle,
+      links: [
+        { platform: 'instagram', url: social.instagram, label: 'Instagram' },
+        { platform: 'facebook', url: social.facebook, label: 'Facebook' },
+        { platform: 'whatsapp', url: `https://wa.me/${contact.whatsapp}`, label: 'WhatsApp' },
+        { platform: 'tiktok', url: social.tiktok, label: 'TikTok' },
+      ],
+    },
+
+    contact: {
+      label: siteContent.contact.label,
+      heading: siteContent.contact.heading,
+      cta: siteContent.contact.cta,
+      items: [
+        {
+          id: 'ubicacion',
+          title: 'Ubicacion',
+          icon: 'location',
+          lines: [contact.address_line1, contact.address_line2],
+        },
+        {
+          id: 'telefono',
+          title: 'Telefono',
+          icon: 'phone',
+          lines: [contact.phone, 'WhatsApp disponible'],
+        },
+        {
+          id: 'correo',
+          title: 'Correo Electronico',
+          icon: 'email',
+          lines: [contact.email, 'Respuesta en 24 horas'],
+        },
+        {
+          id: 'horario',
+          title: 'Horario de Atencion',
+          icon: 'clock',
+          lines: contact.business_hours.split('\n'),
+        },
+      ],
+    },
+
+    footer: {
+      copyright: footer.copyright,
+    },
+  };
+}
