@@ -163,7 +163,6 @@ export default function BlockedTimesPage() {
                   <BlockedTimeCard
                     key={bt.id}
                     blockedTime={bt}
-                    formatDateTime={formatDateTime}
                     formatDuration={formatDuration}
                     onEdit={handleEdit}
                     onDelete={() => setDeleteConfirm(bt.id)}
@@ -188,7 +187,6 @@ export default function BlockedTimesPage() {
                   <BlockedTimeCard
                     key={bt.id}
                     blockedTime={bt}
-                    formatDateTime={formatDateTime}
                     formatDuration={formatDuration}
                     onEdit={handleEdit}
                     onDelete={() => setDeleteConfirm(bt.id)}
@@ -213,7 +211,6 @@ export default function BlockedTimesPage() {
                   <BlockedTimeCard
                     key={bt.id}
                     blockedTime={bt}
-                    formatDateTime={formatDateTime}
                     formatDuration={formatDuration}
                     onEdit={handleEdit}
                     onDelete={() => setDeleteConfirm(bt.id)}
@@ -235,7 +232,6 @@ export default function BlockedTimesPage() {
 // Sub-component for individual blocked time cards
 interface BlockedTimeCardProps {
   blockedTime: AdminBlockedTime;
-  formatDateTime: (iso: string) => string;
   formatDuration: (starts: string, ends: string) => string;
   onEdit: (bt: AdminBlockedTime) => void;
   onDelete: () => void;
@@ -247,7 +243,6 @@ interface BlockedTimeCardProps {
 
 function BlockedTimeCard({
   blockedTime,
-  formatDateTime,
   formatDuration,
   onEdit,
   onDelete,

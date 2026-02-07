@@ -94,7 +94,7 @@ export default function DashboardPage() {
           </h2>
           <div className="bg-primary-light border border-border rounded-lg divide-y divide-border">
             {todayAppointments.map((appt) => (
-              <AppointmentRow key={appt.id} appointment={appt} formatTime={formatTime} />
+              <AppointmentRow key={appt.id} appointment={appt} />
             ))}
           </div>
         </section>
@@ -296,10 +296,9 @@ function MetricCard({ icon, label, value, color, isLarge }: MetricCardProps) {
 
 interface AppointmentRowProps {
   appointment: TodayAppointment;
-  formatTime: (iso: string) => string;
 }
 
-function AppointmentRow({ appointment, formatTime }: AppointmentRowProps) {
+function AppointmentRow({ appointment }: AppointmentRowProps) {
   const statusConfig = STATUS_CONFIG[appointment.status as keyof typeof STATUS_CONFIG];
 
   return (
