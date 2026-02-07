@@ -85,15 +85,42 @@ export default function Navbar({ activeSection }: NavbarProps) {
             {brand.name} <span className="italic text-accent">{brand.accent}</span>
           </a>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation — regular links */}
           <div className="hidden lg:flex items-center gap-8">
-            {nav.links.map((link) => {
-              const Icon = iconMap[link.icon];
-              const isActive = activeSection === link.href.replace('#', '');
-              const isWhatsApp = 'isWhatsApp' in link && link.isWhatsApp;
-              const isExternal = link.href.startsWith('http');
+            {nav.links
+              .filter((link) => !('isWhatsApp' in link && link.isWhatsApp))
+              .map((link) => {
+                const Icon = iconMap[link.icon];
+                const isActive = activeSection === link.href.replace('#', '');
+                const isExternal = link.href.startsWith('http');
 
-              if (isWhatsApp) {
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={isExternal ? undefined : (e) => handleNavClick(e, link.href)}
+                    target={isExternal ? "_blank" : undefined}
+                    rel={isExternal ? "noopener noreferrer" : undefined}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`flex items-center gap-2 text-sm font-sans transition-colors ${
+                      isActive
+                        ? 'text-accent'
+                        : 'text-text-primary hover:text-accent'
+                    }`}
+                  >
+                    {Icon && <Icon className="w-4 h-4" />}
+                    {link.label}
+                  </a>
+                );
+              })}
+          </div>
+
+          {/* WhatsApp + CTA grouped together */}
+          <div className="hidden lg:flex items-center gap-3">
+            {nav.links
+              .filter((link) => 'isWhatsApp' in link && link.isWhatsApp)
+              .map((link) => {
+                const Icon = iconMap[link.icon];
                 return (
                   <a
                     key={link.href}
@@ -107,31 +134,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
                     {link.label}
                   </a>
                 );
-              }
-
-              return (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={isExternal ? undefined : (e) => handleNavClick(e, link.href)}
-                  target={isExternal ? "_blank" : undefined}
-                  rel={isExternal ? "noopener noreferrer" : undefined}
-                  aria-current={isActive ? 'page' : undefined}
-                  className={`flex items-center gap-2 text-sm font-sans transition-colors ${
-                    isActive
-                      ? 'text-accent'
-                      : 'text-text-primary hover:text-accent'
-                  }`}
-                >
-                  {Icon && <Icon className="w-4 h-4" />}
-                  {link.label}
-                </a>
-              );
-            })}
-          </div>
-
-          {/* CTA Button */}
-          <div className="hidden lg:block">
+              })}
             <Link
               to="/book"
               className="btn-cta text-xs py-2 px-4"
