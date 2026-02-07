@@ -23,48 +23,21 @@ export function useCreateBooking(): UseCreateBookingResult {
     setError(null);
 
     try {
-      // 1. Upsert client by phone (primary identifier)
-      let clientId: number;
+      // 1. Find or create client via secure RPC (no direct anon table access)
       const normalizedPhone = state.customer.phone.replace(/\D/g, '');
 
-      const { data: existingClient } = await supabase
-        .from('clients')
-        .select('id')
-        .eq('phone', normalizedPhone)
-        .single();
+      const { data: clientResult, error: clientError } = await supabase.rpc(
+        'find_or_create_client',
+        {
+          p_phone: normalizedPhone,
+          p_name: state.customer.name.trim(),
+          p_email: state.customer.email?.trim() || null,
+          p_notes: state.customer.notes || null,
+        },
+      );
 
-      if (existingClient) {
-        clientId = existingClient.id;
-
-        // Update client info — only overwrite email if a new one is provided
-        const updatePayload: Record<string, unknown> = {
-          name: state.customer.name.trim(),
-          updated_at: new Date().toISOString(),
-        };
-        if (state.customer.email?.trim()) {
-          updatePayload.email = state.customer.email.trim();
-        }
-
-        await supabase
-          .from('clients')
-          .update(updatePayload)
-          .eq('id', clientId);
-      } else {
-        // Create new client
-        const { data: newClient, error: clientError } = await supabase
-          .from('clients')
-          .insert({
-            name: state.customer.name.trim(),
-            email: state.customer.email?.trim() || null,
-            phone: normalizedPhone,
-            notes: state.customer.notes || null,
-          })
-          .select('id')
-          .single();
-
-        if (clientError) throw new Error(`Error creating client: ${clientError.message}`);
-        clientId = newClient.id;
-      }
+      if (clientError) throw new Error(`Error creating client: ${clientError.message}`);
+      const clientId = clientResult as number;
 
       // 3. Calculate starts_at and ends_at with Guatemala timezone offset
       const totalDuration = state.selectedServices.reduce((sum, s) => sum + s.duration, 0);

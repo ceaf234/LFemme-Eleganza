@@ -48,26 +48,9 @@ CREATE POLICY "Authenticated users have full access to staff"
 
 -- ============================================
 -- TABLE: clients
--- Public: SELECT (for email upsert check), INSERT (new clients),
---         UPDATE (update existing client on rebooking)
+-- Public: NO direct access (use find_or_create_client RPC)
 -- Authenticated: full CRUD
 -- ============================================
-CREATE POLICY "Public can read clients for upsert"
-  ON clients FOR SELECT
-  TO anon
-  USING (true);
-
-CREATE POLICY "Public can create clients"
-  ON clients FOR INSERT
-  TO anon
-  WITH CHECK (true);
-
-CREATE POLICY "Public can update clients"
-  ON clients FOR UPDATE
-  TO anon
-  USING (true)
-  WITH CHECK (true);
-
 CREATE POLICY "Authenticated users have full access to clients"
   ON clients FOR ALL
   TO authenticated
@@ -76,18 +59,26 @@ CREATE POLICY "Authenticated users have full access to clients"
 
 -- ============================================
 -- TABLE: appointments
--- Public: SELECT (availability checks), INSERT (create booking)
+-- Public: INSERT only (create booking), UPDATE voucher_path only
 -- Authenticated: full CRUD
+-- Note: Availability checks use get_available_slots RPC
+--       (SECURITY DEFINER — bypasses anon RLS)
 -- ============================================
-CREATE POLICY "Public can read appointments"
-  ON appointments FOR SELECT
-  TO anon
-  USING (true);
-
 CREATE POLICY "Public can create appointments"
   ON appointments FOR INSERT
   TO anon
   WITH CHECK (true);
+
+CREATE POLICY "Public can update voucher path on recent appointments"
+  ON appointments FOR UPDATE
+  TO anon
+  USING (
+    voucher_path IS NULL
+    AND created_at > now() - interval '10 minutes'
+  )
+  WITH CHECK (
+    voucher_path IS NOT NULL
+  );
 
 CREATE POLICY "Authenticated users have full access to appointments"
   ON appointments FOR ALL
@@ -97,14 +88,9 @@ CREATE POLICY "Authenticated users have full access to appointments"
 
 -- ============================================
 -- TABLE: appointment_services
--- Public: SELECT (joins), INSERT (create booking services)
+-- Public: INSERT only (create booking services)
 -- Authenticated: full CRUD
 -- ============================================
-CREATE POLICY "Public can read appointment_services"
-  ON appointment_services FOR SELECT
-  TO anon
-  USING (true);
-
 CREATE POLICY "Public can create appointment_services"
   ON appointment_services FOR INSERT
   TO anon
@@ -118,14 +104,9 @@ CREATE POLICY "Authenticated users have full access to appointment_services"
 
 -- ============================================
 -- TABLE: blocked_times
--- Public: SELECT (availability RPC needs this)
+-- Public: NO access (get_available_slots RPC handles internally)
 -- Authenticated: full CRUD
 -- ============================================
-CREATE POLICY "Public can read blocked_times"
-  ON blocked_times FOR SELECT
-  TO anon
-  USING (true);
-
 CREATE POLICY "Authenticated users have full access to blocked_times"
   ON blocked_times FOR ALL
   TO authenticated
@@ -142,3 +123,63 @@ CREATE POLICY "Authenticated users have full access to appointment_history"
   TO authenticated
   USING (true)
   WITH CHECK (true);
+
+-- ============================================
+-- TABLE: site_settings
+-- Public: SELECT (landing page + payment page need settings)
+-- Authenticated: full CRUD
+-- ============================================
+CREATE POLICY "Public can read site settings"
+  ON site_settings FOR SELECT
+  TO anon
+  USING (true);
+
+CREATE POLICY "Authenticated users have full access to site_settings"
+  ON site_settings FOR ALL
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+-- ============================================
+-- FUNCTION: find_or_create_client (SECURITY DEFINER)
+-- Called from booking flow to safely upsert clients
+-- without exposing the clients table to anon users
+-- ============================================
+CREATE OR REPLACE FUNCTION find_or_create_client(
+  p_phone TEXT,
+  p_name TEXT,
+  p_email TEXT DEFAULT NULL,
+  p_notes TEXT DEFAULT NULL
+)
+RETURNS INTEGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_client_id INTEGER;
+BEGIN
+  -- Look up existing client by phone
+  SELECT id INTO v_client_id
+  FROM clients
+  WHERE phone = p_phone
+  LIMIT 1;
+
+  IF v_client_id IS NOT NULL THEN
+    -- Update existing client info
+    UPDATE clients
+    SET
+      name = p_name,
+      email = CASE WHEN p_email IS NOT NULL AND p_email <> '' THEN p_email ELSE email END,
+      updated_at = now()
+    WHERE id = v_client_id;
+  ELSE
+    -- Create new client
+    INSERT INTO clients (name, email, phone, notes)
+    VALUES (p_name, NULLIF(p_email, ''), p_phone, NULLIF(p_notes, ''))
+    RETURNING id INTO v_client_id;
+  END IF;
+
+  RETURN v_client_id;
+END;
+$$;
